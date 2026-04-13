@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import Container from '../../components/Container.astro';
+import Badge from '../../components/Badge.astro';
+import ResearchFilter from '../../components/ResearchFilter.tsx';
+
+import { getCollection } from 'astro:content';
+
+// Fetch all published research entries
+const allResearch = (await getCollection('research'))
+  .filter((entry) => !entry.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// Serialize for React island (can't pass Astro objects directly)
+const serializedEntries = allResearch.map((entry) => ({
+  id: entry.id,
+  title: entry.data.title,
+  abstract: entry.data.abstract,
+  domain: entry.data.domain,
+  date: entry.data.date.toISOString(),
+  status: entry.data.status,
+  authors: entry.data.authors,
+  tags: entry.data.tags,
+  pdfUrl: entry.data.pdfUrl || undefined,
+  arxivUrl: entry.data.arxivUrl || undefined,
+  ssrnUrl: entry.data.ssrnUrl || undefined,
+  zenodoUrl: entry.data.zenodoUrl || undefined,
+}));
+
+// Schema.org ScholarlyArticle structured data (one per paper)
+const scholarlyArticles = allResearch.map((entry) => ({
+  '@context': 'https://schema.org',
+  '@type': 'ScholarlyArticle',
+  name: entry.data.title,
+  abstract: entry.data.abstract,
+  author: entry.data.authors.map((name: string) => ({
+    '@type': 'Person',
+    name,
+  })),
+  datePublished: entry.data.date.toISOString().split('T')[0],
+  publisher: {
+    '@type': 'Organization',
+    name: 'Vysdom AI',
+    url: 'https://vysdom.ai',
+  },
+  url: `https://vysdom.ai/research/${entry.id}`,
+  ...(entry.data.doi ? { identifier: entry.data.doi } : {}),
+}));
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': scholarlyArticles,
+};
+---
+
+<BaseLayout
+  title="Research Portfolio"
+  description="Academic papers and preprints by Nav Vaidhyanathan — spanning theoretical physics, economics, and formal verification."
+  ogImage="/og-research.png"
+>
+  <!-- Schema.org ScholarlyArticle(s) -->
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} slot="head" />
+
+  <!-- Page Header -->
+  <Section padding="spacious" id="research-hero">
+    <Container>
+      <div class="mx-auto max-w-2xl text-center">
+        <Badge variant="brand" class="mb-4">Research</Badge>
+        <h1 class="mb-4 font-heading text-4xl leading-tight tracking-tight md:text-5xl">
+          Research Portfolio
+        </h1>
+        <p class="mx-auto max-w-xl text-text-secondary text-base leading-relaxed md:text-lg">
+          Academic papers and preprints exploring the boundaries of theoretical physics, economic measurement, and their unexpected connections.
+        </p>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- Research Listing with Filter -->
+  <Section background="alternate" id="research-listing">
+    <Container>
+      <ResearchFilter entries={serializedEntries} client:load />
+    </Container>
+  </Section>
+
+  <!-- Research Note -->
+  <Section id="research-note" padding="compact">
+    <Container>
+      <div class="mx-auto max-w-xl text-center">
+        <p class="text-xs text-text-tertiary leading-relaxed">
+          All theoretical work at Vysdom AI undergoes formal verification using the Lean 4 proof assistant
+          to ensure mathematical consistency. External links to preprint repositories (arXiv, SSRN, Zenodo)
+          will be added as papers are submitted.
+        </p>
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>

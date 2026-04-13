@@ -1,6 +1,6 @@
 ---
 /**
- * Button — Multi-variant button with hover animations.
+ * Button — Multi-variant pill button (Apple-inspired).
  *
  * @prop variant - "primary" | "secondary" | "ghost"
  * @prop size - "sm" | "md" | "lg"
@@ -29,7 +29,8 @@ const {
 
 const baseClasses = [
   'inline-flex items-center justify-center gap-2',
-  'font-body font-medium',
+  'font-body font-semibold',
+  'no-underline',
   'transition-all duration-200 ease-default',
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500',
   'disabled:opacity-50 disabled:cursor-not-allowed',
@@ -38,7 +39,7 @@ const baseClasses = [
 
 const variantClasses: Record<string, string> = {
   primary: [
-    'bg-brand-500 text-white',
+    'bg-brand-500',
     'hover:bg-brand-600 hover:shadow-md',
     'active:scale-[0.98]',
   ].join(' '),
@@ -50,23 +51,30 @@ const variantClasses: Record<string, string> = {
   ].join(' '),
   ghost: [
     'bg-transparent text-text-link',
-    'hover:text-text-link-hover hover:underline underline-offset-4',
+    'hover:text-text-link-hover',
   ].join(' '),
 };
 
 const sizeClasses: Record<string, string> = {
-  sm: 'text-sm px-3 py-1.5 rounded-md',
-  md: 'text-sm px-5 py-2.5 rounded-lg',
-  lg: 'text-base px-7 py-3 rounded-lg',
+  sm: 'text-sm px-4 py-1.5 rounded-full',
+  md: 'text-sm px-6 py-2.5 rounded-full',
+  lg: 'text-base px-7 py-3 rounded-full',
 };
 
 const Tag = href ? 'a' : 'button';
+
+/* Force white text on primary variant via inline style.
+   This is necessary because the global a { color: ... } in @layer base
+   can cascade into <a> tags. Even though @layer utilities should override,
+   inline style is the safest guarantee for this critical contrast pair. */
+const inlineStyle = variant === 'primary' ? 'color: #ffffff;' : undefined;
 ---
 
 <Tag
   id={id}
   href={href}
   type={!href ? type : undefined}
+  style={inlineStyle}
   class:list={[
     ...baseClasses,
     variantClasses[variant],

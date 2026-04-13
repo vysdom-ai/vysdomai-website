@@ -1,6 +1,6 @@
 ---
 /**
- * CTABanner — Full-width call-to-action section.
+ * CTABanner — Full-width call-to-action section with gradient background.
  *
  * @prop title - Main headline
  * @prop description - Supporting text
@@ -9,7 +9,6 @@
  * @prop gradient - Gradient style: "hero" | "cta" | "dark"
  */
 import Container from './Container.astro';
-import Button from './Button.astro';
 
 interface CTALink {
   label: string;
@@ -47,35 +46,53 @@ const gradientClasses: Record<string, string> = {
 >
   <Container class="relative z-10">
     <div class="mx-auto max-w-2xl text-center">
-      <h2 class="mb-4 font-heading text-3xl leading-tight tracking-tight text-white md:text-4xl">
+      {/* Inline style forces white text — immune to global h2 { color } cascade */}
+      <h2
+        class="mb-4 font-heading text-3xl leading-tight tracking-tight md:text-4xl"
+        style="color: #ffffff;"
+      >
         {title}
       </h2>
 
       {description && (
-        <p class="mx-auto mb-8 max-w-xl text-base leading-relaxed text-white/80 md:text-lg">
+        <p
+          class="mx-auto mb-8 max-w-xl text-base leading-relaxed md:text-lg"
+          style="color: rgba(255, 255, 255, 0.85);"
+        >
           {description}
         </p>
       )}
 
       <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
-        <Button
+        {/* Primary CTA: solid white pill with brand text — maximum contrast on gradient */}
+        <a
           href={primaryCTA.href}
-          variant="secondary"
-          size="lg"
-          class="border-white/30 bg-white/10 text-white hover:bg-white/20 hover:border-white/50"
+          class="inline-flex items-center justify-center gap-2
+                 rounded-full px-7 py-3 text-base font-body font-semibold
+                 bg-white text-brand-600
+                 hover:bg-white/90 hover:shadow-lg
+                 active:scale-[0.98]
+                 transition-all duration-200 ease-default
+                 no-underline cursor-pointer"
+          style="color: #36157a;"
         >
           {primaryCTA.label}
-        </Button>
+        </a>
 
         {secondaryCTA && (
-          <Button
+          <a
             href={secondaryCTA.href}
-            variant="ghost"
-            size="lg"
-            class="text-white/80 hover:text-white"
+            class="inline-flex items-center justify-center gap-2
+                   rounded-full px-7 py-3 text-base font-body font-semibold
+                   border border-white/40 bg-transparent
+                   hover:bg-white/10 hover:border-white/60
+                   active:scale-[0.98]
+                   transition-all duration-200 ease-default
+                   no-underline cursor-pointer"
+            style="color: #ffffff;"
           >
             {secondaryCTA.label}
-          </Button>
+          </a>
         )}
       </div>
     </div>

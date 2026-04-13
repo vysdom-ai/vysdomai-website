@@ -1,0 +1,264 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Container from '../components/Container.astro';
+import Card from '../components/Card.astro';
+import Badge from '../components/Badge.astro';
+import Button from '../components/Button.astro';
+import CTABanner from '../components/CTABanner.astro';
+
+// ── Easy Swap: Replace this path with your real photo ──
+const AUTHOR_PORTRAIT = '/images/about/nav-portrait.png';
+
+// Social / academic profiles
+const profiles = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/navvaidhyanathan/', icon: 'linkedin' },
+  { label: 'X (Twitter)', href: 'https://x.com/NavVAtVysdomAI', icon: 'x' },
+  { label: 'Substack', href: 'https://navvaidhyanathanatvysdomai.substack.com/', icon: 'substack' },
+  { label: 'ORCID', href: 'https://orcid.org/0009-0006-5318-3527', icon: 'orcid' },
+];
+
+// Career timeline milestones
+const timeline = [
+  {
+    year: 'Purdue University',
+    title: 'Academic Foundation',
+    description: 'Built the mathematical and analytical foundation that would underpin two decades of quantitative work.',
+  },
+  {
+    year: '17 Years',
+    title: 'Quantitative Finance',
+    description: 'Developed and deployed quantitative models across trading, risk management, and portfolio optimization in institutional finance.',
+  },
+  {
+    year: 'Independent Research',
+    title: 'Cross-Domain Discovery',
+    description: 'Pivoted to independent theoretical research, discovering connections between quantum gravity frameworks and economic measurement that conventional siloed academia had missed.',
+  },
+  {
+    year: '2024',
+    title: 'Vysdom AI Founded',
+    description: 'Established Vysdom AI to bridge the gap between rigorous academic research and practical industry application — bringing compiler-verified methodology to consulting.',
+  },
+];
+
+// Credentials data
+const credentials = [
+  { label: 'Education', value: 'Purdue University', icon: '🎓' },
+  { label: 'Experience', value: '17 Years Quant Finance', icon: '📊' },
+  { label: 'Research Domains', value: 'Physics · Economics', icon: '🔬' },
+  { label: 'Publications', value: '2 Active Papers', icon: '📄' },
+];
+
+// Schema.org Person structured data
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Nav Vaidhyanathan',
+  jobTitle: 'Founder',
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Vysdom AI',
+    url: 'https://vysdom.ai',
+  },
+  alumniOf: {
+    '@type': 'EducationalOrganization',
+    name: 'Purdue University',
+  },
+  url: 'https://vysdom.ai/about',
+  image: 'https://vysdom.ai/images/about/nav-portrait.png',
+  description: 'Founder of Vysdom AI. 17 years in quantitative finance. Independent researcher in theoretical physics and economics.',
+  sameAs: [
+    'https://www.linkedin.com/in/navvaidhyanathan/',
+    'https://x.com/NavVAtVysdomAI',
+    'https://navvaidhyanathanatvysdomai.substack.com/',
+    'https://orcid.org/0009-0006-5318-3527',
+  ],
+};
+---
+
+<BaseLayout
+  title="About"
+  description="Meet Nav Vaidhyanathan — Founder of Vysdom AI. 17 years in quantitative finance, independent researcher in theoretical physics and economics."
+  ogImage="/og-about.png"
+>
+  <!-- Schema.org Person -->
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} slot="head" />
+
+  <!-- Author Hero -->
+  <Section padding="spacious" id="author-hero">
+    <Container>
+      <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-5">
+        <!-- Text column -->
+        <div class="lg:col-span-3 order-2 lg:order-1">
+          <Badge variant="brand" class="mb-4">About</Badge>
+          <h1 class="mb-4 font-heading text-4xl leading-tight tracking-tight md:text-5xl">
+            Nav Vaidhyanathan
+          </h1>
+          <p class="mb-2 text-lg font-medium text-brand-500">
+            Founder, Vysdom AI
+          </p>
+          <p class="mb-6 text-text-secondary leading-relaxed max-w-xl">
+            Bridging 17 years of quantitative finance expertise with independent theoretical research — working at the intersection of physics, economics, and formal verification.
+          </p>
+
+          <!-- Profile links -->
+          <div class="flex flex-wrap gap-3">
+            {profiles.map((profile) => (
+              <a
+                href={profile.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 rounded-full border border-border-default
+                       px-4 py-2 text-xs font-medium font-body text-text-secondary
+                       no-underline transition-all duration-200
+                       hover:border-brand-500 hover:text-brand-500 hover:bg-brand-50
+                       dark:hover:bg-brand-500/10"
+              >
+                {profile.label}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Portrait column -->
+        <div class="lg:col-span-2 order-1 lg:order-2 flex justify-center lg:justify-end">
+          <div class="relative">
+            <!-- Decorative ring -->
+            <div class="absolute -inset-3 rounded-2xl bg-gradient-to-br from-brand-500/20 to-accent-500/20 blur-xl" aria-hidden="true"></div>
+            <img
+              src={AUTHOR_PORTRAIT}
+              alt="Nav Vaidhyanathan — Founder, Vysdom AI"
+              width="320"
+              height="320"
+              class="relative rounded-2xl border border-border-subtle shadow-lg
+                     w-64 h-64 md:w-72 md:h-72 lg:w-80 lg:h-80
+                     object-cover object-top"
+              loading="eager"
+            />
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- Professional Journey Timeline -->
+  <Section background="alternate" id="journey">
+    <Container>
+      <div class="mx-auto max-w-3xl">
+        <div class="mb-10 text-center">
+          <Badge variant="brand" class="mb-4">Professional Journey</Badge>
+          <h2 class="font-heading text-3xl leading-tight tracking-tight md:text-4xl">
+            From Wall Street to Theoretical Physics
+          </h2>
+        </div>
+
+        <div class="relative">
+          <!-- Timeline line -->
+          <div class="absolute left-4 top-0 bottom-0 w-px bg-border-default md:left-1/2 md:-translate-x-px" aria-hidden="true"></div>
+
+          <div class="space-y-10">
+            {timeline.map((item, i) => (
+              <div class:list={[
+                'relative flex flex-col md:flex-row',
+                i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse',
+              ]}>
+                <!-- Timeline dot -->
+                <div class="absolute left-4 md:left-1/2 top-1 md:top-2 -translate-x-1/2 z-10">
+                  <div class="h-3 w-3 rounded-full border-2 border-brand-500 bg-surface-primary"></div>
+                </div>
+
+                <!-- Content card -->
+                <div class:list={[
+                  'ml-10 md:ml-0 md:w-[calc(50%-2rem)]',
+                  i % 2 === 0 ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8',
+                ]}>
+                  <Card hover={false}>
+                    <p class="mb-1 text-xs font-semibold font-body text-brand-500 tracking-wider uppercase">
+                      {item.year}
+                    </p>
+                    <h3 class="mb-2 font-heading text-lg leading-snug">
+                      {item.title}
+                    </h3>
+                    <p class="text-sm text-text-secondary leading-relaxed">
+                      {item.description}
+                    </p>
+                  </Card>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- Credentials Grid -->
+  <Section id="credentials">
+    <Container>
+      <div class="mx-auto max-w-3xl">
+        <div class="mb-10 text-center">
+          <Badge variant="brand" class="mb-4">Credentials</Badge>
+          <h2 class="font-heading text-3xl leading-tight tracking-tight md:text-4xl">
+            Background & Expertise
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+          {credentials.map((cred) => (
+            <Card hover={false} class="text-center">
+              <div class="mb-2 text-2xl" aria-hidden="true">{cred.icon}</div>
+              <p class="text-xs text-text-tertiary font-body mb-1">{cred.label}</p>
+              <p class="text-sm font-semibold font-body text-text-primary">{cred.value}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- Research Philosophy -->
+  <Section background="alternate" id="philosophy">
+    <Container>
+      <div class="mx-auto max-w-2xl">
+        <div class="mb-8 text-center">
+          <Badge variant="brand" class="mb-4">Research Philosophy</Badge>
+          <h2 class="font-heading text-3xl leading-tight tracking-tight md:text-4xl">
+            Why Rigor Matters
+          </h2>
+        </div>
+
+        <!-- Pull quote -->
+        <blockquote class="mb-8 border-l-4 border-brand-500 pl-6 py-2">
+          <p class="font-heading text-xl leading-relaxed text-text-primary italic">
+            "If a mathematical claim cannot survive formal compilation, it has no business appearing in a published paper."
+          </p>
+        </blockquote>
+
+        <div class="space-y-4 text-text-secondary leading-relaxed">
+          <p>
+            Most academic research is verified by peer review — a process relying on human judgment under time pressure. At Vysdom AI, we supplement traditional review with formal verification: every equation in our theoretical work is compiled through the Lean 4 proof assistant before it reaches a manuscript.
+          </p>
+          <p>
+            This approach was born from a simple observation during 17 years in quantitative finance: the models that failed catastrophically were almost always the ones nobody had checked rigorously enough. The culture of "it looks right, ship it" creates hidden systemic risk — in trading, in policy, and in science.
+          </p>
+          <p>
+            Our cross-domain methodology is deliberate. The most significant insights often live at the intersection of fields that don't normally communicate. The connection between quantum mechanics and economic measurement, for instance, would never be discovered within a single department. Independent research has the freedom to follow the mathematics wherever it leads.
+          </p>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- CTA: Work with Nav -->
+  <CTABanner
+    title="Interested in Working Together?"
+    description="Whether you need research consulting, model validation, or cross-domain analysis — let's discuss how rigorous methodology can drive better outcomes."
+    primaryCTA={{ label: 'Book a Discovery Call', href: '/contact' }}
+    secondaryCTA={{ label: 'View Research', href: '/research' }}
+    gradient="cta"
+  />
+</BaseLayout>

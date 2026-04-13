@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Vysdom AI — Logo mark (centered for circular container).
+  Square viewBox centered on the circumcenter of the V's three vertices,
+  so all three are equidistant from the viewBox edge (and thus from
+  any circular CSS clip or container).
+
+  Circumcenter: (59.42, 34.85) in original viewBox coords.
+  Circumradius: 68.89.
+  Square side: 162 (≈15% padding beyond circumscribed circle).
+  viewBox origin: (59.42-81, 34.85-81) = (-21.58, -46.15)
+-->
+<svg
+   viewBox="-21.58 -46.15 162 162"
+   xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(-47.095833,-94.985417)">
+    <g>
+      <path
+         style="mix-blend-mode:multiply;fill:#969696;fill-opacity:1;stroke-width:0.245063;paint-order:normal"
+         d="m 126.712,164.37222 4.92783,-8.74651 -0.016,0.0283 0.0319,-0.0566 -15.01472,-8.38479 z" />
+      <path
+         style="mix-blend-mode:normal;fill:#808080;fill-opacity:1;stroke-width:0.245063;paint-order:normal"
+         d="m 165.93679,95.113817 -5.06826,8.665903 0.0163,-0.0281 -0.0328,0.0561 -14.81193,-8.738013 z" />
+      <rect
+         style="mix-blend-mode:normal;fill:#808080;fill-opacity:1;stroke-width:0.289593;paint-order:normal"
+         width="17.109631"
+         height="60.095608"
+         x="174.03052"
+         y="10.547824"
+         ry="0.23352891"
+         transform="matrix(0.87023853,0.49263059,-0.49333593,0.86983887,0,0)" />
+      <path
+         style="fill:#461e96;fill-opacity:1;stroke-width:0.245063;paint-order:normal"
+         d="m 47.095833,94.985417 5.046176,8.678803 -0.01633,-0.0281 0.03266,0.0563 14.834146,-8.700303 z" />
+      <rect
+         style="fill:#461e96;fill-opacity:1;stroke-width:0.37361;paint-order:normal"
+         width="17.109612"
+         height="100.02407"
+         x="-7.5357022"
+         y="115.79958"
+         ry="0.38868919"
+         transform="rotate(-30.38634)" />
+      <path
+         style="fill:#461e96;fill-opacity:1;stroke-width:0.245063;paint-order:normal"
+         d="m 107.82851,198.60144 -5.12075,-8.63501 0.0166,0.0281 -0.0332,-0.0559 14.82497,-8.71593 z" />
+      <rect
+         style="mix-blend-mode:color-burn;fill:#0a2351;fill-opacity:1;stroke-width:0.264583;paint-order:normal"
+         width="17.109612"
+         height="50.163929"
+         x="25.459871"
+         y="145.85396"
+         ry="0.19493484"
+         transform="rotate(-30.645787)" />
+      <path
+         style="mix-blend-mode:color-burn;fill:#0a2351;fill-opacity:1;stroke-width:0.245063;paint-order:normal"
+         d="m 126.70171,164.19729 -5.12072,-8.63501 0.0166,0.0281 -0.0332,-0.0559 14.82493,-8.71593 z" />
+      <path
+         style="mix-blend-mode:color-burn;fill:#0a2351;fill-opacity:1;stroke-width:0.245063;paint-order:normal"
+         d="m 105.82645,95.230297 5.16014,8.611523 -0.0167,-0.0279 0.0334,0.0557 -14.785003,8.78356 z" />
+    </g>
+  </g>
+</svg>

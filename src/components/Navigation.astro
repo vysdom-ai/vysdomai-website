@@ -38,14 +38,18 @@ const currentPath = Astro.url.pathname;
         class="flex items-center gap-2 text-text-primary no-underline transition-opacity duration-200 hover:opacity-80"
         aria-label="Vysdom AI — Home"
       >
-        <img
-          src="/logo.svg"
-          alt=""
-          width="28"
-          height="28"
-          class="h-7 w-auto"
+        <div
+          class="flex items-center justify-center h-9 w-9 rounded-full bg-white border border-[#d2d2d7] shrink-0"
           aria-hidden="true"
-        />
+        >
+          <img
+            src="/logo-mark.svg"
+            alt=""
+            width="24"
+            height="24"
+            class="h-6 w-6"
+          />
+        </div>
         <span class="font-heading text-xl tracking-tight">
           Vysdom<span class="text-text-tertiary">.</span>AI
         </span>
