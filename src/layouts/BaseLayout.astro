@@ -1,6 +1,10 @@
 ---
 import '../styles/global.css';
 
+import SkipToContent from '../components/SkipToContent.astro';
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+
 interface Props {
   title: string;
   description?: string;
@@ -87,7 +91,7 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toStri
 
   </head>
 
-  <body class="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
+  <body class="min-h-screen bg-surface-primary text-text-primary antialiased">
     <!-- Dark mode: prevent FOUC by reading preference before paint -->
     <script is:inline>
       (function () {
@@ -98,6 +102,43 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toStri
       })();
     </script>
 
-    <slot />
+    <SkipToContent />
+    <Navigation />
+
+    <!-- Main content area — offset for fixed header (h-16 = 4rem) -->
+    <main id="main-content" class="pt-16">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <!-- Lenis smooth scrolling -->
+    <script>
+      import Lenis from 'lenis';
+
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        smoothWheel: true,
+      });
+
+      function raf(time: number) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Respect reduced motion preference
+      const prefersReducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      );
+      if (prefersReducedMotion.matches) {
+        lenis.destroy();
+      }
+      prefersReducedMotion.addEventListener('change', (e) => {
+        if (e.matches) lenis.destroy();
+      });
+    </script>
   </body>
 </html>

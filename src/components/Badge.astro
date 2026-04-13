@@ -1,0 +1,38 @@
+---
+/**
+ * Badge — Topic/tag badge with variant styles.
+ *
+ * @prop variant - "default" | "brand" | "success" | "outline"
+ * @prop class - Additional CSS classes
+ */
+interface Props {
+  variant?: 'default' | 'brand' | 'success' | 'outline';
+  class?: string;
+}
+
+const {
+  variant = 'default',
+  class: className = '',
+} = Astro.props;
+
+const variantClasses: Record<string, string> = {
+  default: 'bg-surface-tertiary text-text-secondary',
+  brand: 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400',
+  success: 'bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400',
+  outline: 'border border-border-default text-text-secondary bg-transparent',
+};
+---
+
+<span
+  class:list={[
+    'inline-flex items-center',
+    'px-2.5 py-0.5',
+    'text-xs font-medium font-body',
+    'rounded-full',
+    'transition-colors duration-150 ease-default',
+    variantClasses[variant],
+    className,
+  ]}
+>
+  <slot />
+</span>

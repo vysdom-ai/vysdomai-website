@@ -1,0 +1,92 @@
+---
+/**
+ * CTABanner — Full-width call-to-action section.
+ *
+ * @prop title - Main headline
+ * @prop description - Supporting text
+ * @prop primaryCTA - Primary CTA { label, href }
+ * @prop secondaryCTA - Optional secondary CTA { label, href }
+ * @prop gradient - Gradient style: "hero" | "cta" | "dark"
+ */
+import Container from './Container.astro';
+import Button from './Button.astro';
+
+interface CTALink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  primaryCTA: CTALink;
+  secondaryCTA?: CTALink;
+  gradient?: 'hero' | 'cta' | 'dark';
+}
+
+const {
+  title,
+  description,
+  primaryCTA,
+  secondaryCTA,
+  gradient = 'cta',
+} = Astro.props;
+
+const gradientClasses: Record<string, string> = {
+  hero: 'gradient-hero',
+  cta: 'gradient-cta',
+  dark: 'gradient-dark-hero',
+};
+---
+
+<section
+  class:list={[
+    'relative overflow-hidden py-16 md:py-20',
+    gradientClasses[gradient],
+  ]}
+>
+  <Container class="relative z-10">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 class="mb-4 font-heading text-3xl leading-tight tracking-tight text-white md:text-4xl">
+        {title}
+      </h2>
+
+      {description && (
+        <p class="mx-auto mb-8 max-w-xl text-base leading-relaxed text-white/80 md:text-lg">
+          {description}
+        </p>
+      )}
+
+      <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <Button
+          href={primaryCTA.href}
+          variant="secondary"
+          size="lg"
+          class="border-white/30 bg-white/10 text-white hover:bg-white/20 hover:border-white/50"
+        >
+          {primaryCTA.label}
+        </Button>
+
+        {secondaryCTA && (
+          <Button
+            href={secondaryCTA.href}
+            variant="ghost"
+            size="lg"
+            class="text-white/80 hover:text-white"
+          >
+            {secondaryCTA.label}
+          </Button>
+        )}
+      </div>
+    </div>
+  </Container>
+
+  <!-- Decorative background pattern -->
+  <div
+    class="pointer-events-none absolute inset-0 opacity-10"
+    aria-hidden="true"
+  >
+    <div class="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-white/20 blur-3xl"></div>
+    <div class="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-white/20 blur-3xl"></div>
+  </div>
+</section>

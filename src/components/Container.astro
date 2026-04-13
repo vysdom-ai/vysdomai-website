@@ -1,0 +1,25 @@
+---
+/**
+ * Container — Max-width wrapper with responsive padding.
+ * Enforces consistent horizontal containment across all pages.
+ *
+ * @prop as - HTML element tag (default: "div")
+ * @prop class - Additional CSS classes
+ */
+interface Props {
+  as?: string;
+  class?: string;
+}
+
+const { as: Tag = 'div', class: className = '' } = Astro.props;
+---
+
+<Tag
+  class:list={[
+    'mx-auto w-full max-w-[80rem]',
+    'px-4 md:px-8 lg:px-16',
+    className,
+  ]}
+>
+  <slot />
+</Tag>

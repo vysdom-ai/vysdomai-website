@@ -1,0 +1,53 @@
+---
+/**
+ * Card — Content card with optional hover lift effect.
+ *
+ * @prop href - If provided, renders as a clickable link card
+ * @prop hover - Enable hover lift animation (default: true)
+ * @prop class - Additional CSS classes
+ * @prop padding - Padding variant: "default" | "compact" | "none"
+ */
+interface Props {
+  href?: string;
+  hover?: boolean;
+  class?: string;
+  padding?: 'default' | 'compact' | 'none';
+}
+
+const {
+  href,
+  hover = true,
+  class: className = '',
+  padding = 'default',
+} = Astro.props;
+
+const Tag = href ? 'a' : 'div';
+
+const paddingClasses: Record<string, string> = {
+  default: 'p-6 md:p-8',
+  compact: 'p-4 md:p-5',
+  none: '',
+};
+
+const hoverClasses = hover
+  ? 'hover:-translate-y-0.5 hover:shadow-card-hover'
+  : '';
+---
+
+<Tag
+  href={href}
+  class:list={[
+    'block',
+    'bg-surface-elevated',
+    'border border-border-subtle',
+    'rounded-xl',
+    'shadow-card',
+    'transition-all duration-200 ease-default',
+    paddingClasses[padding],
+    hoverClasses,
+    href ? 'no-underline text-text-primary' : '',
+    className,
+  ]}
+>
+  <slot />
+</Tag>

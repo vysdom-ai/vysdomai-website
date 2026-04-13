@@ -1,0 +1,154 @@
+---
+/**
+ * Footer — Site footer with navigation, social links, and legal.
+ */
+import Container from './Container.astro';
+
+const currentYear = new Date().getFullYear();
+
+interface FooterLink {
+  label: string;
+  href: string;
+}
+
+const navLinks: FooterLink[] = [
+  { label: 'Research', href: '/research' },
+  { label: 'Services', href: '/services' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const legalLinks: FooterLink[] = [
+  { label: 'Privacy Policy', href: '/privacy' },
+  { label: 'Terms of Service', href: '/terms' },
+];
+
+interface SocialLink {
+  label: string;
+  href: string;
+  icon: string;
+}
+
+const socialLinks: SocialLink[] = [
+  {
+    label: 'LinkedIn',
+    href: 'https://linkedin.com/in/navvaidhyanathan',
+    icon: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+  },
+  {
+    label: 'X (Twitter)',
+    href: 'https://x.com/vysdomai',
+    icon: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
+  },
+  {
+    label: 'Google Scholar',
+    href: 'https://scholar.google.com',
+    icon: 'M5.242 13.769L1 9.5 12 2l11 7.5-4.242 4.269M12 22l-6.758-6.231L12 2l6.758 13.769z',
+  },
+];
+---
+
+<footer
+  class="border-t border-border-subtle bg-surface-secondary"
+  id="site-footer"
+>
+  <Container>
+    <!-- Main footer content -->
+    <div class="grid grid-cols-1 gap-10 py-12 md:grid-cols-3 md:py-16">
+      <!-- Brand column -->
+      <div class="space-y-4">
+        <a
+          href="/"
+          class="inline-block font-heading text-xl tracking-tight text-text-primary no-underline"
+        >
+          Vysdom<span class="text-text-tertiary">.</span>AI
+        </a>
+        <p class="text-sm leading-relaxed text-text-secondary max-w-xs">
+          Research consulting and advanced analytical tools — bridging rigorous
+          theory with real-world impact.
+        </p>
+      </div>
+
+      <!-- Navigation column -->
+      <div>
+        <h3 class="mb-4 font-body text-sm font-semibold uppercase tracking-wider text-text-tertiary">
+          Navigate
+        </h3>
+        <ul class="space-y-2.5" role="list">
+          {navLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="text-sm text-text-secondary no-underline transition-colors duration-150 hover:text-text-primary"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Social + Legal column -->
+      <div class="space-y-6">
+        <div>
+          <h3 class="mb-4 font-body text-sm font-semibold uppercase tracking-wider text-text-tertiary">
+            Connect
+          </h3>
+          <div class="flex gap-3">
+            {socialLinks.map((social) => (
+              <a
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.label}
+                class="flex h-9 w-9 items-center justify-center rounded-lg
+                       text-text-tertiary transition-colors duration-150
+                       hover:bg-surface-tertiary hover:text-text-primary
+                       no-underline"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d={social.icon} />
+                </svg>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3 class="mb-3 font-body text-sm font-semibold uppercase tracking-wider text-text-tertiary">
+            Legal
+          </h3>
+          <ul class="space-y-2" role="list">
+            {legalLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-xs text-text-tertiary no-underline transition-colors duration-150 hover:text-text-secondary"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright bar -->
+    <div class="border-t border-border-subtle py-6">
+      <p class="text-xs text-text-tertiary text-center">
+        &copy; {currentYear} Vysdom AI. All rights reserved.
+      </p>
+    </div>
+  </Container>
+</footer>

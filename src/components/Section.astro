@@ -1,0 +1,46 @@
+---
+/**
+ * Section — Semantic section with consistent vertical spacing.
+ *
+ * @prop id - Section ID for anchor linking
+ * @prop background - Background variant: "default" | "alternate" | "inverse"
+ * @prop class - Additional CSS classes
+ * @prop padding - Padding size: "default" | "compact" | "spacious"
+ */
+interface Props {
+  id?: string;
+  background?: 'default' | 'alternate' | 'inverse';
+  class?: string;
+  padding?: 'default' | 'compact' | 'spacious';
+}
+
+const {
+  id,
+  background = 'default',
+  class: className = '',
+  padding = 'default',
+} = Astro.props;
+
+const bgClasses: Record<string, string> = {
+  default: 'bg-surface-primary',
+  alternate: 'bg-surface-secondary',
+  inverse: 'bg-surface-inverse text-text-inverse',
+};
+
+const paddingClasses: Record<string, string> = {
+  compact: 'py-10 md:py-12 lg:py-16',
+  default: 'py-16 md:py-20 lg:py-24',
+  spacious: 'py-20 md:py-28 lg:py-32',
+};
+---
+
+<section
+  id={id}
+  class:list={[
+    bgClasses[background],
+    paddingClasses[padding],
+    className,
+  ]}
+>
+  <slot />
+</section>

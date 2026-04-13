@@ -1,23 +1,22 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Button from '../components/Button.astro';
 ---
 
 <BaseLayout title="Page Not Found" description="The page you're looking for doesn't exist.">
-  <main class="flex min-h-screen flex-col items-center justify-center px-4">
-    <div class="mx-auto max-w-md text-center">
-      <p class="mb-2 font-mono text-8xl font-bold text-neutral-200 dark:text-neutral-800">
+  <section class="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4">
+    <Container class="text-center">
+      <p class="mb-2 font-mono text-8xl font-bold text-border-default">
         404
       </p>
-      <h1 class="mb-4 text-2xl font-semibold">Page not found</h1>
-      <p class="mb-8 text-neutral-600 dark:text-neutral-400">
+      <h1 class="mb-4 font-heading text-2xl">Page not found</h1>
+      <p class="mx-auto mb-8 max-w-md text-text-secondary">
         The page you&rsquo;re looking for doesn&rsquo;t exist or has been moved.
       </p>
-      <a
-        href="/"
-        class="inline-block rounded-lg bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
-      >
+      <Button href="/" variant="primary" size="md">
         Back to home
-      </a>
-    </div>
-  </main>
+      </Button>
+    </Container>
+  </section>
 </BaseLayout>

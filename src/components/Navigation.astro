@@ -1,0 +1,167 @@
+---
+/**
+ * Navigation — Responsive header with glassmorphism backdrop.
+ * Desktop: horizontal links. Mobile: hamburger slide-out.
+ * Includes dark mode toggle (ThemeToggle React island).
+ */
+import Container from './Container.astro';
+import ThemeToggle from './ThemeToggle.tsx';
+
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+const links: NavLink[] = [
+  { label: 'Home', href: '/' },
+  { label: 'Research', href: '/research' },
+  { label: 'Services', href: '/services' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header
+  class="fixed top-0 left-0 right-0 z-20 glass border-b border-border-subtle"
+  id="site-header"
+>
+  <Container>
+    <nav
+      class="flex h-16 items-center justify-between"
+      aria-label="Main navigation"
+    >
+      <!-- Logo -->
+      <a
+        href="/"
+        class="flex items-center gap-1 text-text-primary no-underline transition-opacity duration-200 hover:opacity-80"
+        aria-label="Vysdom AI — Home"
+      >
+        <span class="font-heading text-xl tracking-tight">
+          Vysdom<span class="text-text-tertiary">.</span>AI
+        </span>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <div class="hidden items-center gap-1 md:flex" id="desktop-nav">
+        {links.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              'px-3 py-2 text-sm font-medium font-body rounded-lg',
+              'transition-colors duration-150 ease-default',
+              'no-underline',
+              currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
+                ? 'bg-surface-tertiary text-text-primary'
+                : 'text-text-secondary hover:text-text-primary hover:bg-surface-tertiary/50',
+            ]}
+            aria-current={currentPath === link.href ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+
+      <!-- Right side: Theme toggle + Mobile hamburger -->
+      <div class="flex items-center gap-2">
+        <ThemeToggle client:load />
+
+        <!-- Mobile hamburger -->
+        <button
+          class="flex h-9 w-9 items-center justify-center rounded-lg
+                 text-text-secondary transition-colors duration-200
+                 hover:bg-surface-tertiary hover:text-text-primary
+                 md:hidden cursor-pointer"
+          aria-label="Open menu"
+          aria-expanded="false"
+          id="mobile-menu-button"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="3" y1="6" x2="21" y2="6" class="hamburger-top"></line>
+            <line x1="3" y1="12" x2="21" y2="12" class="hamburger-mid"></line>
+            <line x1="3" y1="18" x2="21" y2="18" class="hamburger-bottom"></line>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </Container>
+
+  <!-- Mobile Menu Panel -->
+  <div
+    class="fixed inset-0 top-16 z-10 hidden bg-surface-primary/95
+           backdrop-blur-lg md:hidden"
+    id="mobile-menu-panel"
+    role="dialog"
+    aria-label="Mobile navigation"
+  >
+    <Container>
+      <div class="flex flex-col gap-1 py-6">
+        {links.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              'px-4 py-3 text-base font-medium font-body rounded-lg',
+              'transition-colors duration-150 ease-default',
+              'no-underline',
+              currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
+                ? 'bg-surface-tertiary text-text-primary'
+                : 'text-text-secondary hover:text-text-primary hover:bg-surface-tertiary/50',
+            ]}
+            aria-current={currentPath === link.href ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </Container>
+  </div>
+</header>
+
+<!-- Mobile menu toggle script -->
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const button = document.getElementById('mobile-menu-button');
+    const panel = document.getElementById('mobile-menu-panel');
+
+    if (!button || !panel) return;
+
+    button.addEventListener('click', () => {
+      const isOpen = !panel.classList.contains('hidden');
+      panel.classList.toggle('hidden', isOpen);
+      button.setAttribute('aria-expanded', String(!isOpen));
+
+      // Prevent body scroll when menu is open
+      document.body.style.overflow = isOpen ? '' : 'hidden';
+    });
+
+    // Close menu on link click
+    panel.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        panel.classList.add('hidden');
+        button.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.classList.contains('hidden')) {
+        panel.classList.add('hidden');
+        button.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+        button.focus();
+      }
+    });
+  });
+</script>

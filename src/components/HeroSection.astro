@@ -1,0 +1,228 @@
+---
+/**
+ * HeroSection — Animated hero with GSAP SplitText.
+ *
+ * @prop overline - Small text above the headline
+ * @prop headline - Main headline text
+ * @prop subheadline - Supporting text below headline
+ * @prop primaryCTA - Primary CTA { label, href }
+ * @prop secondaryCTA - Optional secondary CTA { label, href }
+ */
+import Container from './Container.astro';
+import Button from './Button.astro';
+import Badge from './Badge.astro';
+
+interface CTALink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  overline?: string;
+  headline: string;
+  subheadline?: string;
+  primaryCTA?: CTALink;
+  secondaryCTA?: CTALink;
+}
+
+const {
+  overline,
+  headline,
+  subheadline,
+  primaryCTA,
+  secondaryCTA,
+} = Astro.props;
+---
+
+<section
+  class="relative overflow-hidden py-20 md:py-28 lg:py-36"
+  id="hero"
+>
+  <!-- Decorative gradient orb -->
+  <div
+    class="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2
+           rounded-full opacity-20 blur-[100px]
+           gradient-hero hero-orb"
+    aria-hidden="true"
+  ></div>
+
+  <Container class="relative z-10">
+    <div class="mx-auto max-w-3xl text-center">
+      <!-- Overline badge -->
+      {overline && (
+        <div class="hero-animate mb-6" style="opacity: 0; transform: translateY(1.5rem);">
+          <Badge variant="brand">{overline}</Badge>
+        </div>
+      )}
+
+      <!-- Headline -->
+      <h1
+        class="hero-animate mb-6 font-heading leading-tight tracking-tight"
+        id="hero-headline"
+        style="opacity: 0; transform: translateY(1.5rem);"
+      >
+        {headline}
+      </h1>
+
+      <!-- Subheadline -->
+      {subheadline && (
+        <p
+          class="hero-animate mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-text-secondary md:text-xl"
+          style="opacity: 0; transform: translateY(1.5rem);"
+        >
+          {subheadline}
+        </p>
+      )}
+
+      <!-- CTA Group -->
+      {(primaryCTA || secondaryCTA) && (
+        <div
+          class="hero-animate flex flex-col items-center justify-center gap-4 sm:flex-row"
+          style="opacity: 0; transform: translateY(1.5rem);"
+        >
+          {primaryCTA && (
+            <Button href={primaryCTA.href} variant="primary" size="lg" id="hero-primary-cta">
+              {primaryCTA.label}
+            </Button>
+          )}
+          {secondaryCTA && (
+            <Button href={secondaryCTA.href} variant="secondary" size="lg" id="hero-secondary-cta">
+              {secondaryCTA.label}
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+  </Container>
+</section>
+
+<!-- GSAP Hero Animation Script -->
+<script>
+  function showHeroElements() {
+    document.querySelectorAll('.hero-animate').forEach((el) => {
+      const htmlEl = el as HTMLElement;
+      htmlEl.style.opacity = '1';
+      htmlEl.style.transform = 'translateY(0)';
+      htmlEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    });
+  }
+
+  // Safety fallback — always show content after 2 seconds even if GSAP fails
+  const fallbackTimer = setTimeout(showHeroElements, 2000);
+
+  async function initHeroAnimation() {
+    try {
+      // Respect reduced motion
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        clearTimeout(fallbackTimer);
+        showHeroElements();
+        return;
+      }
+
+      const { gsap } = await import('gsap');
+      const { SplitText } = await import('gsap/SplitText');
+      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+
+      gsap.registerPlugin(SplitText, ScrollTrigger);
+
+      const headline = document.getElementById('hero-headline');
+      if (!headline) {
+        clearTimeout(fallbackTimer);
+        showHeroElements();
+        return;
+      }
+
+      // Cancel fallback — GSAP is handling it
+      clearTimeout(fallbackTimer);
+
+      // Get all animated elements
+      const animatedEls = document.querySelectorAll('.hero-animate');
+
+      // SplitText the headline
+      let split: InstanceType<typeof SplitText> | null = null;
+      try {
+        split = new SplitText(headline, {
+          type: 'chars,words',
+        });
+      } catch {
+        // SplitText failed — use simple animation instead
+        showHeroElements();
+        return;
+      }
+
+      // Master timeline
+      const tl = gsap.timeline({
+        defaults: { ease: 'power3.out' },
+      });
+
+      // Animate each element in sequence
+      const els = Array.from(animatedEls);
+
+      // Overline (first element)
+      if (els[0]) {
+        tl.to(els[0], {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+        });
+      }
+
+      // Headline: set visible, then animate chars in
+      tl.set(headline, { opacity: 1, y: 0 });
+      if (split && split.chars && split.chars.length > 0) {
+        tl.from(split.chars, {
+          opacity: 0,
+          y: 30,
+          rotateX: -40,
+          stagger: 0.02,
+          duration: 0.6,
+        }, '-=0.2');
+      }
+
+      // Subheadline (third element if exists)
+      if (els[2]) {
+        tl.to(els[2], {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+        }, '-=0.3');
+      }
+
+      // CTA (fourth element if exists)
+      if (els[3]) {
+        tl.to(els[3], {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+        }, '-=0.3');
+      }
+
+      // Parallax on decorative orb
+      gsap.to('.hero-orb', {
+        y: 150,
+        scrollTrigger: {
+          trigger: '#hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1,
+        },
+      });
+    } catch (error) {
+      // GSAP import or animation failed — show content with CSS fallback
+      console.warn('Hero animation failed, using CSS fallback:', error);
+      clearTimeout(fallbackTimer);
+      showHeroElements();
+    }
+  }
+
+  // Run immediately (module scripts execute after DOM is ready)
+  initHeroAnimation();
+</script>
+
+<style>
+  /* GSAP SplitText char styling */
+  :global(.hero-char) {
+    display: inline-block;
+    will-change: transform, opacity;
+  }
+</style>
