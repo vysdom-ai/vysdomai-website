@@ -16,6 +16,8 @@ interface Props {
   class?: string;
   type?: 'button' | 'submit' | 'reset';
   id?: string;
+  target?: '_blank' | '_self';
+  rel?: string;
 }
 
 const {
@@ -25,7 +27,12 @@ const {
   class: className = '',
   type = 'button',
   id,
+  target,
+  rel,
 } = Astro.props;
+
+// Security: auto-set rel for _blank targets
+const linkRel = rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined);
 
 const baseClasses = [
   'inline-flex items-center justify-center gap-2',
@@ -74,6 +81,8 @@ const inlineStyle = variant === 'primary' ? 'color: #ffffff;' : undefined;
   id={id}
   href={href}
   type={!href ? type : undefined}
+  target={href ? target : undefined}
+  rel={href ? linkRel : undefined}
   style={inlineStyle}
   class:list={[
     ...baseClasses,

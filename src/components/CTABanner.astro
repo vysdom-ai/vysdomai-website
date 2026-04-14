@@ -13,6 +13,7 @@ import Container from './Container.astro';
 interface CTALink {
   label: string;
   href: string;
+  external?: boolean;
 }
 
 interface Props {
@@ -67,6 +68,8 @@ const gradientClasses: Record<string, string> = {
         {/* Primary CTA: solid white pill with brand text — maximum contrast on gradient */}
         <a
           href={primaryCTA.href}
+          target={primaryCTA.external ? '_blank' : undefined}
+          rel={primaryCTA.external ? 'noopener noreferrer' : undefined}
           class="inline-flex items-center justify-center gap-2
                  rounded-full px-7 py-3 text-base font-body font-semibold
                  bg-white text-brand-600
@@ -82,6 +85,8 @@ const gradientClasses: Record<string, string> = {
         {secondaryCTA && (
           <a
             href={secondaryCTA.href}
+            target={secondaryCTA.external ? '_blank' : undefined}
+            rel={secondaryCTA.external ? 'noopener noreferrer' : undefined}
             class="inline-flex items-center justify-center gap-2
                    rounded-full px-7 py-3 text-base font-body font-semibold
                    border border-white/40 bg-transparent

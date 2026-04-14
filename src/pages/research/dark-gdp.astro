@@ -102,10 +102,10 @@ const campaignSchema = {
           </p>
 
           <div class="hero-fade flex flex-col gap-3 sm:flex-row" style="opacity: 0; transform: translateY(1.5rem);">
-            <Button href={zenodoUrl} variant="primary" size="lg" id="hero-read-paper">
+            <Button href={zenodoUrl} variant="primary" size="lg" id="hero-read-paper" target="_blank">
               Read the Full Paper
             </Button>
-            <Button href={substackUrl} variant="secondary" size="lg" id="hero-substack">
+            <Button href={substackUrl} variant="secondary" size="lg" id="hero-substack" target="_blank">
               Read on Substack
             </Button>
           </div>
@@ -429,10 +429,10 @@ const campaignSchema = {
         </p>
 
         <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Button href={zenodoUrl} variant="primary" size="lg" id="cta-zenodo">
+          <Button href={zenodoUrl} variant="primary" size="lg" id="cta-zenodo" target="_blank">
             Zenodo (Open Access)
           </Button>
-          <Button href={substackUrl} variant="secondary" size="lg" id="cta-substack">
+          <Button href={substackUrl} variant="secondary" size="lg" id="cta-substack" target="_blank">
             Substack (Plain Language)
           </Button>
         </div>
@@ -449,7 +449,7 @@ const campaignSchema = {
     title="Discuss This Research"
     description="Interested in the policy implications of Dark GDP? Exploring the economics of digital labor for your organization? Let's talk."
     primaryCTA={{ label: 'Book a Discovery Call', href: '/contact' }}
-    secondaryCTA={{ label: 'Follow on Substack', href: substackUrl }}
+    secondaryCTA={{ label: 'Follow on Substack', href: substackUrl, external: true }}
     gradient="cta"
   />
 </BaseLayout>
