@@ -325,6 +325,7 @@
   align-items: flex-start;
   justify-content: center;
   padding-top: clamp(4rem, 15vh, 8rem);
+  pointer-events: none !important; /* Override Radix inline style — lets taps reach the overlay for dismiss */
 }
 
 /* Inner container — the visible search box */
@@ -339,6 +340,7 @@
   background: var(--color-surface-elevated);
   box-shadow: var(--shadow-xl), 0 0 0 1px rgb(0 0 0 / 0.05);
   animation: scale-in 0.2s var(--ease-spring);
+  pointer-events: auto; /* Re-enable interaction on the actual search box */
 }
 
 .dark [cmdk-dialog] > [cmdk-root] {
