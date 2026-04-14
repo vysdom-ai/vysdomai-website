@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "postbuild": "pagefind --site dist/client",
+    "postbuild": "pagefind --site dist/client && cp -r dist/client/pagefind .vercel/output/static/pagefind",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "biome check --write ./src",
