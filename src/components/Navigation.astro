@@ -43,11 +43,11 @@ const currentPath = Astro.url.pathname;
           aria-hidden="true"
         >
           <img
-            src="/logo-mark.svg"
+            src="/logo-mark-simple.svg"
             alt=""
-            width="24"
-            height="24"
-            class="h-6 w-6"
+            width="28"
+            height="28"
+            class="h-7 w-7"
           />
         </div>
         <span class="font-heading text-xl tracking-tight">
@@ -108,41 +108,43 @@ const currentPath = Astro.url.pathname;
       </div>
     </nav>
   </Container>
-
-  <!-- Mobile Menu Panel -->
-  <div
-    class="fixed inset-0 top-16 z-10 hidden bg-surface-primary/95
-           backdrop-blur-lg md:hidden"
-    id="mobile-menu-panel"
-    role="dialog"
-    aria-label="Mobile navigation"
-  >
-    <Container>
-      <div class="flex flex-col gap-1 py-6">
-        {links.map((link) => (
-          <a
-            href={link.href}
-            class:list={[
-              'px-4 py-3 text-base font-medium font-body rounded-lg',
-              'transition-colors duration-150 ease-default',
-              'no-underline',
-              currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
-                ? 'bg-surface-tertiary text-text-primary'
-                : 'text-text-secondary hover:text-text-primary hover:bg-surface-tertiary/50',
-            ]}
-            aria-current={currentPath === link.href ? 'page' : undefined}
-          >
-            {link.label}
-          </a>
-        ))}
-      </div>
-    </Container>
-  </div>
 </header>
+
+<!-- Mobile Menu Panel (outside <header> to escape backdrop-filter containing block) -->
+<div
+  class="fixed inset-0 top-16 z-40 hidden bg-surface-primary/95
+         backdrop-blur-lg md:hidden"
+  id="mobile-menu-panel"
+  role="dialog"
+  aria-label="Mobile navigation"
+>
+  <Container>
+    <div class="flex flex-col gap-1 py-6">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            'px-4 py-3 text-base font-medium font-body rounded-lg',
+            'transition-colors duration-150 ease-default',
+            'no-underline',
+            currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
+              ? 'bg-surface-tertiary text-text-primary'
+              : 'text-text-secondary hover:text-text-primary hover:bg-surface-tertiary/50',
+          ]}
+          aria-current={currentPath === link.href ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
+  </Container>
+</div>
 
 <!-- Mobile menu toggle script -->
 <script>
-  document.addEventListener('astro:page-load', () => {
+  // IIFE — Astro <script> tags are deferred ESM modules; DOM is ready.
+  // (Replaces astro:page-load which requires View Transitions to fire reliably.)
+  (() => {
     const button = document.getElementById('mobile-menu-button');
     const panel = document.getElementById('mobile-menu-panel');
 
@@ -155,6 +157,10 @@ const currentPath = Astro.url.pathname;
 
       // Prevent body scroll when menu is open
       document.body.style.overflow = isOpen ? '' : 'hidden';
+
+      // Pause/resume Lenis smooth scrolling
+      if (isOpen) (window as any).lenis?.start();
+      else (window as any).lenis?.stop();
     });
 
     // Close menu on link click
@@ -163,6 +169,7 @@ const currentPath = Astro.url.pathname;
         panel.classList.add('hidden');
         button.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
+        (window as any).lenis?.start();
       });
     });
 
@@ -172,8 +179,9 @@ const currentPath = Astro.url.pathname;
         panel.classList.add('hidden');
         button.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
+        (window as any).lenis?.start();
         button.focus();
       }
     });
-  });
+  })();
 </script>

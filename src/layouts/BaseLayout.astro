@@ -123,6 +123,9 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toStri
         smoothWheel: true,
       });
 
+      // Expose for mobile menu pause/resume (Navigation.astro)
+      (window as any).lenis = lenis;
+
       function raf(time: number) {
         lenis.raf(time);
         requestAnimationFrame(raf);
