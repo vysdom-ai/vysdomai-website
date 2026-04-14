@@ -6,6 +6,7 @@
  */
 import Container from './Container.astro';
 import ThemeToggle from './ThemeToggle.tsx';
+import SearchDialog from './SearchDialog.tsx';
 
 interface NavLink {
   label: string;
@@ -75,8 +76,9 @@ const currentPath = Astro.url.pathname;
         ))}
       </div>
 
-      <!-- Right side: Theme toggle + Mobile hamburger -->
-      <div class="flex items-center gap-2">
+      <!-- Right side: Search + Theme toggle + Mobile hamburger -->
+      <div class="flex items-center gap-1">
+        <SearchDialog client:load />
         <ThemeToggle client:load />
 
         <!-- Mobile hamburger -->

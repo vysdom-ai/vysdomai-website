@@ -302,3 +302,298 @@
   margin-bottom: 0.5em;
 }
 .prose-content h4 { font-size: var(--text-2xl); }
+
+/* ── Search Dialog (cmdk) ──────────────────────────────────────── */
+
+/* Overlay — rendered by Radix Dialog via cmdk */
+[cmdk-overlay] {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgb(0 0 0 / 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fade-in 0.15s var(--ease-out);
+}
+
+/* Dialog content container — rendered by Radix Dialog via cmdk */
+[cmdk-dialog] {
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: clamp(4rem, 15vh, 8rem);
+}
+
+/* Inner container — the visible search box */
+[cmdk-dialog] > [cmdk-root] {
+  width: min(90vw, 560px);
+  max-height: min(70vh, 480px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-xl), 0 0 0 1px rgb(0 0 0 / 0.05);
+  animation: scale-in 0.2s var(--ease-spring);
+}
+
+.dark [cmdk-dialog] > [cmdk-root] {
+  background: var(--color-surface-secondary);
+  border-color: var(--color-border-default);
+  box-shadow: var(--shadow-xl), 0 0 0 1px rgb(255 255 255 / 0.05);
+}
+
+/* Input wrapper */
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.search-input-icon {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text-primary);
+  caret-color: var(--color-brand-500);
+}
+
+.dark .search-input {
+  caret-color: var(--color-brand-300);
+}
+
+.search-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.search-kbd {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.375rem;
+  padding: 0 0.375rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.dark .search-kbd {
+  background: var(--color-surface-tertiary);
+  border-color: var(--color-border-strong);
+}
+
+/* Results list */
+.search-results {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.5rem;
+}
+
+/* Group heading */
+.search-group [data-cmdk-group-heading] {
+  padding: 0.375rem 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-tertiary);
+}
+
+/* Individual result item */
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.5rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color 0.1s var(--ease-default);
+}
+
+.search-item[data-selected="true"],
+.search-item:hover {
+  background: var(--color-surface-tertiary);
+}
+
+.dark .search-item[data-selected="true"],
+.dark .search-item:hover {
+  background: var(--color-surface-tertiary);
+}
+
+.search-item-icon {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+}
+
+.search-item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.search-item-title {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-item-excerpt {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Pagefind highlight marks */
+.search-item-excerpt mark {
+  background: transparent;
+  color: var(--color-brand-500);
+  font-weight: 600;
+}
+
+.dark .search-item-excerpt mark {
+  color: var(--color-brand-300);
+}
+
+.search-item-arrow {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+  opacity: 0;
+  transition: opacity 0.1s var(--ease-default);
+}
+
+.search-item[data-selected="true"] .search-item-arrow {
+  opacity: 1;
+}
+
+/* Empty / loading / hint states */
+.search-empty,
+.search-loading {
+  padding: 2rem 1rem;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+.search-hint {
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+
+.search-hint p {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  margin-bottom: 0.75rem;
+}
+
+.search-hint-shortcuts {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  color: var(--color-text-tertiary);
+}
+
+.search-hint-shortcuts kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.125rem;
+  padding: 0 0.25rem;
+  margin: 0 0.125rem;
+  border-radius: 3px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+}
+
+.dark .search-hint-shortcuts kbd {
+  background: var(--color-surface-tertiary);
+  border-color: var(--color-border-strong);
+}
+
+/* Footer */
+.search-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.search-footer-brand {
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  color: var(--color-text-tertiary);
+}
+
+.search-footer-brand strong {
+  font-weight: 600;
+}
+
+.search-footer-shortcut {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.search-footer-shortcut kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.125rem;
+  padding: 0 0.25rem;
+  border-radius: 3px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  color: var(--color-text-tertiary);
+}
+
+.dark .search-footer-shortcut kbd {
+  background: var(--color-surface-tertiary);
+  border-color: var(--color-border-strong);
+}
+
