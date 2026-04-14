@@ -95,7 +95,7 @@ const personSchema = {
           <h1 class="mb-4 font-heading text-4xl leading-tight tracking-tight md:text-5xl">
             Nav Vaidhyanathan
           </h1>
-          <p class="mb-2 text-lg font-medium text-brand-500">
+          <p class="mb-2 text-lg font-medium text-brand-500 dark:text-brand-300">
             Founder, Vysdom AI
           </p>
           <p class="mb-6 text-text-secondary leading-relaxed max-w-xl">
@@ -113,7 +113,7 @@ const personSchema = {
                        px-4 py-2 text-xs font-medium font-body text-text-secondary
                        no-underline transition-all duration-200
                        hover:border-brand-500 hover:text-brand-500 hover:bg-brand-50
-                       dark:hover:bg-brand-500/10"
+                       dark:hover:border-brand-300 dark:hover:text-brand-300 dark:hover:bg-brand-500/10"
               >
                 {profile.label}
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -168,7 +168,7 @@ const personSchema = {
               ]}>
                 <!-- Timeline dot -->
                 <div class="absolute left-4 md:left-1/2 top-1 md:top-2 -translate-x-1/2 z-10">
-                  <div class="h-3 w-3 rounded-full border-2 border-brand-500 bg-surface-primary"></div>
+                  <div class="h-3 w-3 rounded-full border-2 border-brand-500 dark:border-brand-300 bg-surface-primary"></div>
                 </div>
 
                 <!-- Content card -->
@@ -177,7 +177,7 @@ const personSchema = {
                   i % 2 === 0 ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8',
                 ]}>
                   <Card hover={false}>
-                    <p class="mb-1 text-xs font-semibold font-body text-brand-500 tracking-wider uppercase">
+                    <p class="mb-1 text-xs font-semibold font-body text-brand-500 dark:text-brand-300 tracking-wider uppercase">
                       {item.year}
                     </p>
                     <h3 class="mb-2 font-heading text-lg leading-snug">
@@ -232,7 +232,7 @@ const personSchema = {
         </div>
 
         <!-- Pull quote -->
-        <blockquote class="mb-8 border-l-4 border-brand-500 pl-6 py-2">
+        <blockquote class="mb-8 border-l-4 border-brand-500 dark:border-brand-300 pl-6 py-2">
           <p class="font-heading text-xl leading-relaxed text-text-primary italic">
             "If a mathematical claim cannot survive formal compilation, it has no business appearing in a published paper."
           </p>
