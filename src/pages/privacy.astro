@@ -1,0 +1,192 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Container from '../components/Container.astro';
+
+const lastUpdated = 'April 13, 2026';
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description="Vysdom AI Privacy Policy — how we collect, use, protect, and share your information. GDPR, CCPA, and COPPA compliant."
+>
+  <Section padding="spacious">
+    <Container>
+      <div class="mx-auto max-w-3xl prose-content">
+
+        <h1>Privacy Policy</h1>
+        <p class="text-text-secondary">
+          <strong>Last Updated:</strong> {lastUpdated}
+        </p>
+        <p>
+          Vysdom AI ("we," "us," or "our") operates the website <a href="https://vysdom.ai">vysdom.ai</a> (the "Site"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our Site or use our services. By accessing or using the Site, you agree to the terms of this Privacy Policy.
+        </p>
+
+        <h2>1. Information We Collect</h2>
+
+        <h3>1.1 Information You Provide Directly</h3>
+        <p>We collect information that you voluntarily provide when using our contact form or engaging with our services:</p>
+        <ul>
+          <li><strong>Contact Information:</strong> Name and email address</li>
+          <li><strong>Inquiry Details:</strong> Subject category and message content</li>
+          <li><strong>Professional Information:</strong> Any additional context you choose to share about your organization or project</li>
+        </ul>
+        <p>We do <strong>not</strong> collect payment information through the Site. Any consulting engagement payments are processed through separate, secure channels governed by individual engagement agreements.</p>
+
+        <h3>1.2 Information Collected Automatically</h3>
+        <p>We use <a href="https://umami.is" target="_blank" rel="noopener noreferrer">Umami</a>, a privacy-first, cookieless analytics platform. Umami does not use cookies, does not collect personally identifiable information, and fully complies with GDPR, CCPA, and PECR without requiring a cookie consent banner.</p>
+        <p>The following anonymized, aggregate data may be collected:</p>
+        <ul>
+          <li>Page views and referral sources</li>
+          <li>Browser type and device category (mobile, desktop)</li>
+          <li>Country-level geographic data (no IP addresses stored)</li>
+          <li>Session duration (anonymized, not tied to individuals)</li>
+        </ul>
+        <p>We do <strong>not</strong> use Google Analytics, Facebook Pixel, or any tracking technology that builds user profiles or shares data with advertisers.</p>
+
+        <h2>2. How We Use Your Information</h2>
+        <p>We use the information we collect solely for the following purposes:</p>
+        <ul>
+          <li><strong>Respond to Inquiries:</strong> To reply to your contact form submissions and provide requested information about our services</li>
+          <li><strong>Deliver Services:</strong> To fulfill consulting engagements as agreed upon in separate Statements of Work</li>
+          <li><strong>Improve the Site:</strong> To understand how visitors interact with our Site and improve user experience (via anonymized Umami analytics only)</li>
+          <li><strong>Legal Compliance:</strong> To comply with applicable laws, regulations, and legal processes</li>
+        </ul>
+        <p>We do <strong>not</strong> sell, rent, lease, or otherwise commercially exploit your personal information. We do <strong>not</strong> use your information for marketing purposes unless you have provided explicit, opt-in consent.</p>
+
+        <h2>3. Legal Bases for Processing (GDPR)</h2>
+        <p>If you are located in the European Economic Area (EEA), United Kingdom, or Switzerland, we process your personal data under the following legal bases:</p>
+        <ul>
+          <li><strong>Legitimate Interest:</strong> Responding to business inquiries submitted through our contact form (Article 6(1)(f) GDPR)</li>
+          <li><strong>Contract Performance:</strong> Processing data necessary to deliver consulting services under an engagement agreement (Article 6(1)(b) GDPR)</li>
+          <li><strong>Legal Obligation:</strong> Where required by applicable law (Article 6(1)(c) GDPR)</li>
+          <li><strong>Consent:</strong> Where we seek your explicit permission for specific processing activities, such as marketing communications (Article 6(1)(a) GDPR). You may withdraw consent at any time.</li>
+        </ul>
+
+        <h2>4. Cookies & Tracking Technologies</h2>
+        <p>The Site uses <strong>no cookies</strong> for analytics or tracking purposes. Our analytics provider (Umami) is fully cookieless. No cookie consent banner is required because no tracking cookies are deployed.</p>
+        <p>Essential cookies may be used by our hosting provider (Vercel) for basic infrastructure purposes such as load balancing and security. These are strictly necessary and do not require consent under GDPR/PECR.</p>
+
+        <h2>5. Data Retention</h2>
+        <p>We retain your personal information only for as long as necessary to fulfill the purposes outlined in this Privacy Policy:</p>
+        <ul>
+          <li><strong>Contact form submissions:</strong> Retained for up to <strong>24 months</strong> from the date of submission, then permanently deleted</li>
+          <li><strong>Consulting engagement records:</strong> Retained for <strong>7 years</strong> as required by applicable tax and business record-keeping regulations</li>
+          <li><strong>Analytics data:</strong> Anonymized and aggregated — no personal data retained</li>
+        </ul>
+        <p>You may request early deletion of your personal data at any time (see Section 6).</p>
+
+        <h2>6. Your Rights</h2>
+
+        <h3>6.1 Rights Under GDPR (EEA, UK, Switzerland)</h3>
+        <p>If you are located in the EEA, UK, or Switzerland, you have the following rights:</p>
+        <ul>
+          <li><strong>Right of Access:</strong> Request a copy of the personal data we hold about you</li>
+          <li><strong>Right to Rectification:</strong> Request correction of inaccurate or incomplete data</li>
+          <li><strong>Right to Erasure:</strong> Request deletion of your personal data ("right to be forgotten")</li>
+          <li><strong>Right to Restriction:</strong> Request that we limit the processing of your data</li>
+          <li><strong>Right to Data Portability:</strong> Receive your data in a structured, machine-readable format</li>
+          <li><strong>Right to Object:</strong> Object to processing based on legitimate interest</li>
+          <li><strong>Right to Withdraw Consent:</strong> Where processing is based on consent, you may withdraw it at any time</li>
+          <li><strong>Right to Lodge a Complaint:</strong> File a complaint with your local Data Protection Authority</li>
+        </ul>
+
+        <h3>6.2 Rights Under CCPA (California Residents)</h3>
+        <p>If you are a California resident, you have the following rights under the California Consumer Privacy Act (CCPA) and the California Privacy Rights Act (CPRA):</p>
+        <ul>
+          <li><strong>Right to Know:</strong> Request disclosure of the categories and specific pieces of personal information we have collected</li>
+          <li><strong>Right to Delete:</strong> Request deletion of your personal information</li>
+          <li><strong>Right to Opt-Out of Sale:</strong> We do <strong>not</strong> sell personal information. No opt-out is necessary.</li>
+          <li><strong>Right to Non-Discrimination:</strong> We will not discriminate against you for exercising your privacy rights</li>
+          <li><strong>Right to Correct:</strong> Request correction of inaccurate personal information</li>
+          <li><strong>Right to Limit Use of Sensitive Personal Information:</strong> We do not collect sensitive personal information as defined by the CPRA</li>
+        </ul>
+
+        <h3>6.3 Exercising Your Rights</h3>
+        <p>To exercise any of the above rights, please contact us at:</p>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:privacy@vysdom.ai">privacy@vysdom.ai</a></li>
+        </ul>
+        <p>We will respond to all verified requests within <strong>30 days</strong> (or 45 days if the request is complex, with notice to you of the extension). We may require identity verification before fulfilling a request.</p>
+
+        <h2>7. Third-Party Service Providers</h2>
+        <p>We share your information only with the following third-party service providers, each of whom is contractually bound to protect your data:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Provider</th>
+              <th>Purpose</th>
+              <th>Data Shared</th>
+              <th>Privacy Policy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Resend</strong></td>
+              <td>Transactional email delivery</td>
+              <td>Name, email, message content</td>
+              <td><a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Link</a></td>
+            </tr>
+            <tr>
+              <td><strong>Vercel</strong></td>
+              <td>Website hosting and serverless functions</td>
+              <td>IP address (for routing), request metadata</td>
+              <td><a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Link</a></td>
+            </tr>
+            <tr>
+              <td><strong>Umami</strong></td>
+              <td>Privacy-first website analytics</td>
+              <td>Anonymized page view data (no PII)</td>
+              <td><a href="https://umami.is/privacy" target="_blank" rel="noopener noreferrer">Link</a></td>
+            </tr>
+            <tr>
+              <td><strong>Google</strong></td>
+              <td>Appointment scheduling (Google Calendar)</td>
+              <td>Name, email (when booking)</td>
+              <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Link</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>We do not share your data with any other third parties, data brokers, or advertising networks.</p>
+
+        <h2>8. International Data Transfers</h2>
+        <p>Your information may be processed in the United States, where our hosting infrastructure (Vercel) and email delivery provider (Resend) operate. If you are located outside the United States, please be aware that data protection laws in the US may differ from those in your jurisdiction.</p>
+        <p>Where applicable, we ensure appropriate safeguards are in place for international transfers, including Standard Contractual Clauses (SCCs) as maintained by our service providers.</p>
+
+        <h2>9. Data Security</h2>
+        <p>We implement industry-standard technical and organizational measures to protect your personal information, including:</p>
+        <ul>
+          <li>HTTPS/TLS encryption for all data in transit</li>
+          <li>Server-side input validation and sanitization</li>
+          <li>Rate limiting and honeypot spam protection on contact forms</li>
+          <li>Minimal data collection principles (we only collect what is necessary)</li>
+          <li>Regular security review of third-party integrations</li>
+        </ul>
+        <p>While we take reasonable measures to protect your information, no method of transmission over the Internet or electronic storage is 100% secure. We cannot guarantee absolute security.</p>
+
+        <h2>10. Children's Privacy</h2>
+        <p>The Site is not directed at children under the age of 13, and we do not knowingly collect personal information from children under 13. If we become aware that we have inadvertently collected personal information from a child under 13, we will take steps to delete such information promptly. If you believe we have collected information from a child under 13, please contact us immediately.</p>
+
+        <h2>11. Do Not Track Signals</h2>
+        <p>Our Site does not track users across third-party websites and therefore does not respond to Do Not Track (DNT) signals. However, our use of cookieless, privacy-first analytics means we inherently respect user privacy beyond the scope of DNT compliance.</p>
+
+        <h2>12. Changes to This Privacy Policy</h2>
+        <p>We may update this Privacy Policy from time to time. When we make material changes, we will update the "Last Updated" date at the top of this page. We encourage you to review this Privacy Policy periodically. Your continued use of the Site after any changes constitutes your acceptance of the revised Privacy Policy.</p>
+
+        <h2>13. Contact Us</h2>
+        <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:</p>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:privacy@vysdom.ai">privacy@vysdom.ai</a></li>
+          <li><strong>Website:</strong> <a href="https://vysdom.ai/contact">vysdom.ai/contact</a></li>
+        </ul>
+        <p>
+          <strong>Vysdom AI</strong><br />
+          New York, United States
+        </p>
+
+      </div>
+    </Container>
+  </Section>
+</BaseLayout>

@@ -1,0 +1,238 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Container from '../components/Container.astro';
+import Badge from '../components/Badge.astro';
+import CTABanner from '../components/CTABanner.astro';
+import ContactForm from '../components/ContactForm.tsx';
+
+// ── Booking URL ──
+const BOOKING_URL = import.meta.env.BOOKING_URL || '#';
+
+// ── Parse subject from query string (for pre-filling from service card CTAs) ──
+const url = new URL(Astro.request.url);
+const defaultSubject = url.searchParams.get('subject') || '';
+
+// ── Social / contact links ──
+const contactLinks = [
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/navvaidhyanathan/',
+    description: 'Professional network',
+    icon: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+  },
+  {
+    label: 'X (Twitter)',
+    href: 'https://x.com/NavVAtVysdomAI',
+    description: 'Research updates',
+    icon: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
+  },
+  {
+    label: 'Substack',
+    href: 'https://navvaidhyanathanatvysdomai.substack.com/',
+    description: 'Long-form articles',
+    icon: 'M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z',
+  },
+];
+
+// ── Schema.org ContactPage structured data ──
+const contactSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contact Vysdom AI',
+  description: 'Get in touch with Vysdom AI for research consulting, technical advisory, or speaking engagements.',
+  url: 'https://vysdom.ai/contact',
+  mainEntity: {
+    '@type': 'Organization',
+    name: 'Vysdom AI',
+    url: 'https://vysdom.ai',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'Business inquiries',
+      availableLanguage: ['English'],
+    },
+  },
+};
+---
+
+<BaseLayout
+  title="Contact"
+  description="Get in touch with Vysdom AI. Reach out for research consulting, model validation, speaking engagements, or general inquiries."
+  ogImage="/og-contact.png"
+>
+  <!-- Schema.org ContactPage -->
+  <script type="application/ld+json" set:html={JSON.stringify(contactSchema)} slot="head" />
+
+  <!-- Hero / Form Section -->
+  <Section padding="spacious" id="contact-form">
+    <Container>
+      <div class="mx-auto max-w-4xl">
+        <!-- Section header -->
+        <div class="mb-10 text-center">
+          <Badge variant="brand" class="mb-4">Get in Touch</Badge>
+          <h1 class="mb-4 font-heading text-4xl leading-tight tracking-tight md:text-5xl">
+            Let's Talk
+          </h1>
+          <p class="mx-auto max-w-2xl text-lg text-text-secondary leading-relaxed">
+            Have a research question, need quantitative advisory, or want to invite me to speak? Fill out the form below or connect directly.
+          </p>
+        </div>
+
+        <!-- Two-column layout -->
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-5">
+          <!-- Left: Contact form (3 cols) -->
+          <div class="lg:col-span-3 relative">
+            <ContactForm client:load defaultSubject={defaultSubject} />
+          </div>
+
+          <!-- Right: Info sidebar (2 cols) -->
+          <div class="lg:col-span-2">
+            <div class="space-y-8">
+              <!-- Response time -->
+              <div
+                class="rounded-xl border border-border-subtle bg-surface-elevated p-6
+                       shadow-card"
+              >
+                <div class="mb-3 flex items-center gap-2">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-brand-500 dark:text-brand-300"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  <h3 class="font-heading text-base leading-snug">
+                    Response Time
+                  </h3>
+                </div>
+                <p class="text-sm text-text-secondary leading-relaxed">
+                  I typically respond to inquiries within <strong class="text-text-primary">48 business hours</strong>. For urgent matters, please indicate so in your message.
+                </p>
+              </div>
+
+              <!-- Book a call -->
+              {BOOKING_URL && BOOKING_URL !== '#' && (
+                <div
+                  class="rounded-xl border border-border-subtle bg-surface-elevated p-6
+                         shadow-card"
+                >
+                  <div class="mb-3 flex items-center gap-2">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="text-brand-500 dark:text-brand-300"
+                      aria-hidden="true"
+                    >
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                      <line x1="16" y1="2" x2="16" y2="6" />
+                      <line x1="8" y1="2" x2="8" y2="6" />
+                      <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    <h3 class="font-heading text-base leading-snug">
+                      Prefer a Call?
+                    </h3>
+                  </div>
+                  <p class="mb-4 text-sm text-text-secondary leading-relaxed">
+                    Skip the form and book a 30-minute discovery call directly on my calendar.
+                  </p>
+                  <a
+                    href={BOOKING_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center gap-2
+                           rounded-full px-5 py-2 text-sm font-body font-semibold
+                           border border-border-default bg-transparent text-text-primary
+                           hover:bg-surface-tertiary hover:border-border-strong
+                           active:scale-[0.98]
+                           transition-all duration-200 ease-default
+                           no-underline cursor-pointer"
+                  >
+                    Book a Discovery Call
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M7 17L17 7M17 7H7M17 7V17" />
+                    </svg>
+                  </a>
+                </div>
+              )}
+
+              <!-- Connect elsewhere -->
+              <div>
+                <h3 class="mb-4 font-heading text-base leading-snug">
+                  Connect Elsewhere
+                </h3>
+                <div class="space-y-3">
+                  {contactLinks.map((link) => (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex items-center gap-3 rounded-lg p-3
+                             border border-border-subtle
+                             transition-all duration-200
+                             hover:border-brand-500 hover:bg-brand-50/50
+                             dark:hover:border-brand-300 dark:hover:bg-brand-500/5
+                             no-underline group"
+                    >
+                      <div
+                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full
+                               bg-surface-tertiary text-text-tertiary
+                               group-hover:bg-brand-50 group-hover:text-brand-500
+                               dark:group-hover:bg-brand-500/10 dark:group-hover:text-brand-300
+                               transition-colors duration-200"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d={link.icon} />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="text-sm font-semibold font-body text-text-primary">
+                          {link.label}
+                        </p>
+                        <p class="text-xs text-text-tertiary">
+                          {link.description}
+                        </p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- CTA Banner -->
+  <CTABanner
+    title="Prefer a Structured Engagement?"
+    description="Browse our consulting services to find the right fit, or book a discovery call to discuss your project directly."
+    primaryCTA={{ label: 'View Services', href: '/services' }}
+    secondaryCTA={{ label: 'About Vysdom AI', href: '/about' }}
+    gradient="cta"
+  />
+</BaseLayout>

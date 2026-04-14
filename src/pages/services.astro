@@ -1,0 +1,282 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Container from '../components/Container.astro';
+import Card from '../components/Card.astro';
+import Badge from '../components/Badge.astro';
+import Button from '../components/Button.astro';
+import CTABanner from '../components/CTABanner.astro';
+import HeroSection from '../components/HeroSection.astro';
+
+// ── Booking URL (Google Calendar Appointment Scheduling) ──
+const BOOKING_URL = import.meta.env.BOOKING_URL || '/contact';
+
+// ── Service Offerings ──
+const services = [
+  {
+    badge: 'Research Collaboration',
+    title: 'Joint Research & Co-Authorship',
+    description:
+      'Partner on original research at the intersection of physics, economics, and formal verification. From hypothesis formation through publication.',
+    idealFor: 'Academic researchers, think tanks, and R&D teams seeking cross-domain expertise.',
+    deliverables: [
+      'Co-authored peer-reviewed papers',
+      'Mathematical derivations with formal verification',
+      'Technical reports and working papers',
+      'Conference presentations',
+    ],
+    cta: { label: 'Discuss a Project', href: '/contact?subject=research' },
+  },
+  {
+    badge: 'Technical Advisory',
+    title: 'Model Validation & Quantitative Review',
+    description:
+      'Independent review and validation of quantitative models, mathematical frameworks, and research methodologies. Leveraging 17 years of institutional finance experience.',
+    idealFor: 'Hedge funds, asset managers, fintech companies, and academic departments.',
+    deliverables: [
+      'Model audit reports with identified risks',
+      'Mathematical consistency verification',
+      'Code review for quantitative implementations',
+      'Recommendations for methodology improvements',
+    ],
+    cta: { label: 'Request a Review', href: '/contact?subject=advisory' },
+  },
+  {
+    badge: 'Speaking & Education',
+    title: 'Conferences, Workshops & Lectures',
+    description:
+      'Engaging presentations on cross-domain research, formal verification in practice, and the intersection of physics and economics. Tailored for technical and non-technical audiences.',
+    idealFor: 'Conference organizers, universities, corporate learning programs, and media.',
+    deliverables: [
+      'Keynote and invited talks',
+      'Half-day and full-day workshops',
+      'Guest lectures and seminar series',
+      'Custom educational materials',
+    ],
+    cta: { label: 'Invite to Speak', href: '/contact?subject=speaking' },
+  },
+];
+
+// ── Process Steps ──
+const process = [
+  {
+    step: '01',
+    title: 'Discovery Call',
+    description:
+      'A 30-minute conversation to understand your objectives, constraints, and timeline. No commitment required.',
+  },
+  {
+    step: '02',
+    title: 'Scope & Proposal',
+    description:
+      'A detailed proposal outlining deliverables, methodology, timeline, and investment. Transparent pricing with no hidden fees.',
+  },
+  {
+    step: '03',
+    title: 'Engagement',
+    description:
+      'Structured collaboration with regular check-ins, milestone deliverables, and full documentation. All work governed by a formal Statement of Work.',
+  },
+];
+
+// ── Trust Signals ──
+const credentials = [
+  { label: 'Education', value: 'Purdue University', icon: '🎓' },
+  { label: 'Experience', value: '17 Years Quant Finance', icon: '📊' },
+  { label: 'Research Domains', value: 'Physics · Economics', icon: '🔬' },
+  { label: 'Methodology', value: 'Formally Verified', icon: '✓' },
+];
+
+// ── Schema.org Service structured data ──
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Vysdom AI Consulting',
+  description:
+    'Research consulting and quantitative advisory services in theoretical physics, economics, and formal verification.',
+  url: 'https://vysdom.ai/services',
+  provider: {
+    '@type': 'Organization',
+    name: 'Vysdom AI',
+    url: 'https://vysdom.ai',
+  },
+  areaServed: 'Worldwide',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Consulting Services',
+    itemListElement: services.map((s, i) => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: s.title,
+        description: s.description,
+      },
+      position: i + 1,
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title="Services"
+  description="Expert consulting in quantitative research, model validation, and formal verification. 17 years of institutional finance experience applied to your toughest problems."
+  ogImage="/og-services.png"
+>
+  <!-- Schema.org Service -->
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} slot="head" />
+
+  <!-- Hero -->
+  <HeroSection
+    overline="Consulting"
+    headline="Expert Consulting in Quantitative Research & Theory"
+    subheadline="Rigorous methodology meets real-world application. From model validation to co-authored research — get the analytical depth your project demands."
+    primaryCTA={{ label: 'Schedule a Discovery Call', href: BOOKING_URL }}
+    secondaryCTA={{ label: 'View Research', href: '/research' }}
+  />
+
+  <!-- Service Offerings -->
+  <Section background="alternate" id="offerings">
+    <Container>
+      <div class="mx-auto max-w-4xl">
+        <div class="mb-10 text-center">
+          <Badge variant="brand" class="mb-4">What We Offer</Badge>
+          <h2 class="font-heading text-3xl leading-tight tracking-tight md:text-4xl">
+            Consulting Services
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-text-secondary leading-relaxed">
+            Each engagement is scoped to your specific needs. No templated solutions — every project receives rigorous, first-principles analysis.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 lg:gap-8">
+          {services.map((service) => (
+            <Card hover={false}>
+              <div class="flex flex-col gap-4 lg:flex-row lg:gap-8">
+                <!-- Left: description -->
+                <div class="flex-1">
+                  <Badge variant="brand" class="mb-3">{service.badge}</Badge>
+                  <h3 class="mb-3 font-heading text-xl leading-snug md:text-2xl">
+                    {service.title}
+                  </h3>
+                  <p class="mb-4 text-text-secondary leading-relaxed">
+                    {service.description}
+                  </p>
+                  <p class="text-sm text-text-tertiary">
+                    <span class="font-semibold font-body text-text-secondary">Ideal for:</span>{' '}
+                    {service.idealFor}
+                  </p>
+                </div>
+
+                <!-- Right: deliverables + CTA -->
+                <div class="lg:w-72 shrink-0">
+                  <p class="mb-3 text-xs font-semibold font-body text-text-primary tracking-wider uppercase">
+                    Deliverables
+                  </p>
+                  <ul class="mb-5 space-y-2">
+                    {service.deliverables.map((item) => (
+                      <li class="flex items-start gap-2 text-sm text-text-secondary">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="shrink-0 mt-0.5 text-brand-500 dark:text-brand-300"
+                          aria-hidden="true"
+                        >
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    href={service.cta.href}
+                    variant="secondary"
+                    size="sm"
+                  >
+                    {service.cta.label}
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- How It Works -->
+  <Section id="process">
+    <Container>
+      <div class="mx-auto max-w-3xl">
+        <div class="mb-10 text-center">
+          <Badge variant="brand" class="mb-4">How It Works</Badge>
+          <h2 class="font-heading text-3xl leading-tight tracking-tight md:text-4xl">
+            From First Call to Final Deliverable
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {process.map((item) => (
+            <div class="text-center">
+              <!-- Step number -->
+              <div
+                class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full
+                       bg-brand-50 text-brand-600 font-body font-bold text-lg
+                       dark:bg-brand-500/10 dark:text-brand-300"
+              >
+                {item.step}
+              </div>
+              <h3 class="mb-2 font-heading text-lg leading-snug">
+                {item.title}
+              </h3>
+              <p class="text-sm text-text-secondary leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- Trust Signals -->
+  <Section background="alternate" id="credentials">
+    <Container>
+      <div class="mx-auto max-w-3xl">
+        <div class="mb-10 text-center">
+          <Badge variant="brand" class="mb-4">Credentials</Badge>
+          <h2 class="font-heading text-3xl leading-tight tracking-tight md:text-4xl">
+            Why Work With Vysdom AI
+          </h2>
+          <p class="mx-auto mt-4 max-w-xl text-text-secondary leading-relaxed">
+            Every engagement draws on deep institutional experience and a methodology grounded in formal verification — not intuition.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+          {credentials.map((cred) => (
+            <Card hover={false} class="text-center">
+              <div class="mb-2 text-2xl" aria-hidden="true">{cred.icon}</div>
+              <p class="text-xs text-text-tertiary font-body mb-1">{cred.label}</p>
+              <p class="text-sm font-semibold font-body text-text-primary">{cred.value}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- CTA: Book a Discovery Call -->
+  <CTABanner
+    title="Schedule a Discovery Call"
+    description="30 minutes. No commitment. Let's discuss how rigorous quantitative methodology can drive better outcomes for your project."
+    primaryCTA={{ label: 'Book a Call', href: BOOKING_URL }}
+    secondaryCTA={{ label: 'Send a Message', href: '/contact' }}
+    gradient="cta"
+  />
+</BaseLayout>

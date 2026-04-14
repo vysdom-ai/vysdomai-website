@@ -46,6 +46,7 @@
     "react-dom": "^19.2.5",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
+    "resend": "^6.11.0",
     "satori": "^0.26.0",
     "tailwindcss": "^4.2.2"
   },
