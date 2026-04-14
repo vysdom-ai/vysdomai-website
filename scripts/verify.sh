@@ -16,9 +16,9 @@ PASS=0
 FAIL=0
 SKIP=0
 
-pass() { echo -e "${GREEN}✓ PASS${NC}: $1"; ((PASS++)); }
-fail() { echo -e "${RED}✗ FAIL${NC}: $1"; ((FAIL++)); }
-skip() { echo -e "${YELLOW}⊘ SKIP${NC}: $1"; ((SKIP++)); }
+pass() { echo -e "${GREEN}✓ PASS${NC}: $1"; PASS=$((PASS + 1)); }
+fail() { echo -e "${RED}✗ FAIL${NC}: $1"; FAIL=$((FAIL + 1)); }
+skip() { echo -e "${YELLOW}⊘ SKIP${NC}: $1"; SKIP=$((SKIP + 1)); }
 header() { echo -e "\n${CYAN}═══ $1 ═══${NC}"; }
 
 # Resolve project root (script lives in vysdomai-website/scripts/)
@@ -70,8 +70,8 @@ run_l2() {
   header "L2: Design System Integrity"
   
   if [ -d "src/components" ]; then
-    COLORS=$(grep -rn '\[#[0-9a-fA-F]' src/components/ 2>/dev/null | wc -l | tr -d ' ')
-    PIXELS=$(grep -rn '\[[0-9]*px\]' src/components/ 2>/dev/null | wc -l | tr -d ' ')
+    COLORS=$( (grep -rn '\[#[0-9a-fA-F]' src/components/ 2>/dev/null || true) | wc -l | tr -d ' ')
+    PIXELS=$( (grep -rn '\[[0-9]*px\]' src/components/ 2>/dev/null || true) | wc -l | tr -d ' ')
     
     if [ "$COLORS" -eq 0 ]; then
       pass "No arbitrary color values in components"
@@ -105,20 +105,23 @@ run_l3() {
     skip "Visual test directory not found"
   fi
   
-  # Image size check
+  # Image size check (page-load images only — OG images are exempt)
   OVERSIZED=0
   while IFS= read -r f; do
+    # Skip OG images (crawler-only, never loaded during page render)
+    [[ "$(basename "$f")" == og-* ]] && continue
+    [[ "$(basename "$f")" == *-og.* ]] && continue
     SIZE=$(stat -f%z "$f" 2>/dev/null || stat --printf='%s' "$f" 2>/dev/null || echo "0")
     if [ "$SIZE" -gt 204800 ]; then
       echo "  Oversized ($SIZE bytes): $f"
-      ((OVERSIZED++))
+      OVERSIZED=$((OVERSIZED + 1))
     fi
   done < <(find public src -name "*.png" -o -name "*.jpg" -o -name "*.webp" 2>/dev/null)
   
   if [ "$OVERSIZED" -eq 0 ]; then
-    pass "All images within size budget (< 200KB)"
+    pass "All page-load images within size budget (< 200KB)"
   else
-    fail "$OVERSIZED oversized images found"
+    fail "$OVERSIZED oversized page-load images found"
   fi
 }
 
@@ -163,16 +166,16 @@ run_l6() {
   header "L6: Security & Legal"
   
   # Check required pages exist in build output
-  if [ -d "dist" ]; then
+  if [ -d "dist/client" ]; then
     for page in "privacy" "terms"; do
-      if [ -f "dist/${page}/index.html" ] || [ -f "dist/${page}.html" ]; then
+      if [ -f "dist/client/${page}/index.html" ] || [ -f "dist/client/${page}.html" ]; then
         pass "Page exists: /${page}"
       else
         fail "Missing page: /${page}"
       fi
     done
   else
-    skip "Build output (dist/) not found — run build first"
+    skip "Build output (dist/client/) not found — run build first"
   fi
 }
 
@@ -182,29 +185,29 @@ run_l6() {
 run_l7() {
   header "L7: SEO & Social"
   
-  if [ -d "dist" ]; then
+  if [ -d "dist/client" ]; then
     # Check sitemap
-    if [ -f "dist/sitemap-index.xml" ] || [ -f "dist/sitemap-0.xml" ]; then
+    if [ -f "dist/client/sitemap-index.xml" ] || [ -f "dist/client/sitemap-0.xml" ]; then
       pass "XML sitemap exists"
     else
       fail "XML sitemap missing"
     fi
     
     # Check robots.txt
-    if [ -f "dist/robots.txt" ]; then
+    if [ -f "dist/client/robots.txt" ]; then
       pass "robots.txt exists"
     else
       fail "robots.txt missing"
     fi
     
     # Check OG tags in homepage
-    if grep -q 'og:title' dist/index.html 2>/dev/null; then
+    if grep -q 'og:title' dist/client/index.html 2>/dev/null; then
       pass "OG tags present in homepage"
     else
       fail "OG tags missing from homepage"
     fi
   else
-    skip "Build output (dist/) not found — run build first"
+    skip "Build output (dist/client/) not found — run build first"
   fi
 }
 
@@ -214,19 +217,19 @@ run_l7() {
 run_l8() {
   header "L8: Conversion & Content"
   
-  # Link checker
-  if command -v lychee &> /dev/null; then
-    if [ -d "dist" ]; then
-      if lychee --no-progress dist/ 2>/dev/null; then
-        pass "All links valid (lychee)"
+  # Link checker (linkinator via npm)
+  if npx linkinator --help &> /dev/null; then
+    if [ -d "dist/client" ]; then
+      if npx linkinator dist/client/ --recurse --silent 2>/dev/null; then
+        pass "All links valid (linkinator)"
       else
         fail "Broken links detected"
       fi
     else
-      skip "Build output (dist/) not found"
+      skip "Build output (dist/client/) not found"
     fi
   else
-    skip "lychee not installed"
+    skip "linkinator not installed"
   fi
   
   # E2E conversion tests
@@ -247,15 +250,15 @@ run_l8() {
 run_l9() {
   header "L9: Edge Cases"
   
-  if [ -d "dist" ]; then
+  if [ -d "dist/client" ]; then
     # Check 404 page
-    if [ -f "dist/404.html" ]; then
+    if [ -f "dist/client/404.html" ]; then
       pass "Custom 404 page exists"
     else
       fail "Custom 404 page missing"
     fi
   else
-    skip "Build output (dist/) not found"
+    skip "Build output (dist/client/) not found"
   fi
   
   # Edge case E2E tests

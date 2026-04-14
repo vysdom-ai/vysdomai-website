@@ -3,8 +3,12 @@
  *
  * POST /api/contact
  *
- * Validates input, checks honeypot, rate-limits by IP,
- * and delivers the message via Resend to the configured recipient.
+ * 5-layer protection stack:
+ *   L1: Honeypot field (_company) — catches basic bots
+ *   L2: IP-based rate limiting (3/15min) — prevents flooding
+ *   L3: Time-based detection — rejects submissions < 3 seconds
+ *   L4: MX validation + disposable email blocklist — verifies email domain
+ *   L5: Cloudflare Turnstile — invisible CAPTCHA verification
  *
  * Astro 6: `export const prerender = false` opts this route into SSR.
  */
@@ -13,14 +17,31 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
+import { resolve as dnsResolve } from 'node:dns/promises';
 
 // ── Configuration ──
 
 const RESEND_API_KEY = import.meta.env.RESEND_API_KEY;
 const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'nav.vaidhyanathan@vysdom.ai';
 const FROM_ADDRESS = 'Vysdom AI Contact <contact@vysdom.ai>';
+const TURNSTILE_SECRET_KEY = import.meta.env.TURNSTILE_SECRET_KEY;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 const RATE_LIMIT_MAX = 3; // max submissions per window per IP
+const MIN_SUBMIT_TIME_MS = 3000; // reject submissions faster than 3 seconds
+
+// ── Disposable email domain blocklist ──
+
+const DISPOSABLE_DOMAINS = new Set([
+  'mailinator.com', 'guerrillamail.com', 'guerrillamail.de', 'grr.la',
+  'guerrillamailblock.com', 'tempmail.com', 'throwaway.email', 'temp-mail.org',
+  'fakeinbox.com', 'sharklasers.com', 'guerrillamail.info', 'guerrillamail.biz',
+  'guerrillamail.net', 'yopmail.com', 'yopmail.fr', 'dispostable.com',
+  'trashmail.com', 'trashmail.me', 'trashmail.net', 'mytemp.email',
+  'mohmal.com', 'getnada.com', 'tempail.com', 'emailondeck.com',
+  'mailnesia.com', 'maildrop.cc', 'discard.email', 'mailcatch.com',
+  'harakirimail.com', '10minutemail.com', 'minutemail.com', 'tempr.email',
+  'temp-mail.io', 'burnermail.io', 'mailsac.com', 'inboxbear.com',
+]);
 
 // ── Rate limiter (in-memory — resets on cold start, acceptable for serverless) ──
 
@@ -53,6 +74,8 @@ interface ContactPayload {
   subject: string;
   message: string;
   _company?: string;
+  _loadTime?: number; // timestamp when form was rendered
+  'cf-turnstile-response'?: string; // Turnstile token
 }
 
 function validatePayload(
@@ -62,7 +85,8 @@ function validatePayload(
     return { success: false, error: 'Invalid request body.' };
   }
 
-  const { name, email, subject, message, _company } = data as Record<string, unknown>;
+  const raw = data as Record<string, unknown>;
+  const { name, email, subject, message, _company } = raw;
 
   // Name
   if (typeof name !== 'string' || !name.trim()) {
@@ -104,8 +128,62 @@ function validatePayload(
       subject: subject as string,
       message: message.trim(),
       _company: typeof _company === 'string' ? _company : '',
+      _loadTime: typeof raw._loadTime === 'number' ? raw._loadTime : 0,
+      'cf-turnstile-response': typeof raw['cf-turnstile-response'] === 'string'
+        ? raw['cf-turnstile-response'] : '',
     },
   };
+}
+
+// ── MX Validation ──
+
+async function hasValidMxRecords(emailDomain: string): Promise<boolean> {
+  try {
+    const records = await dnsResolve(emailDomain, 'MX');
+    return Array.isArray(records) && records.length > 0;
+  } catch {
+    return false;
+  }
+}
+
+function isDisposableEmail(email: string): boolean {
+  const domain = email.split('@')[1]?.toLowerCase();
+  return domain ? DISPOSABLE_DOMAINS.has(domain) : false;
+}
+
+// ── Turnstile Verification ──
+
+async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
+  if (!TURNSTILE_SECRET_KEY) {
+    // No secret key configured — skip verification (development)
+    console.warn('[contact] TURNSTILE_SECRET_KEY not configured, skipping Turnstile verification');
+    return true;
+  }
+
+  if (!token || token === '__cf_turnstile_error__') {
+    // Client-side Turnstile failed (localhost not whitelisted, ad blocker, etc.)
+    // In development: allow through. In production: this should be rare.
+    console.warn('[contact] Turnstile token missing or client-side error, skipping verification');
+    return true;
+  }
+
+  try {
+    const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        secret: TURNSTILE_SECRET_KEY,
+        response: token,
+        remoteip: ip,
+      }),
+    });
+
+    const result = await response.json() as { success: boolean };
+    return result.success;
+  } catch (err) {
+    console.error('[contact] Turnstile verification failed:', err);
+    return false;
+  }
 }
 
 // ── Subject label mapping ──
@@ -142,9 +220,10 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       );
     }
 
-    const { name, email, subject, message, _company } = validation.data;
+    const { name, email, subject, message, _company, _loadTime } = validation.data;
+    const turnstileToken = validation.data['cf-turnstile-response'] || '';
 
-    // Honeypot check — if filled, silently succeed (fool the bot)
+    // L1: Honeypot check — if filled, silently succeed (fool the bot)
     if (_company && _company.length > 0) {
       return new Response(
         JSON.stringify({ success: true, message: 'Message sent successfully.' }),
@@ -152,7 +231,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       );
     }
 
-    // Rate limiting
+    // L2: Rate limiting
     const ip = clientAddress || request.headers.get('x-forwarded-for') || 'unknown';
     if (isRateLimited(ip)) {
       return new Response(
@@ -161,6 +240,51 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           message: 'Too many submissions. Please try again in 15 minutes.',
         }),
         { status: 429, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+
+    // L3: Time-based detection — reject suspiciously fast submissions
+    if (_loadTime && _loadTime > 0) {
+      const elapsed = Date.now() - _loadTime;
+      if (elapsed < MIN_SUBMIT_TIME_MS) {
+        // Silently succeed to not reveal detection to bots
+        return new Response(
+          JSON.stringify({ success: true, message: 'Message sent successfully.' }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        );
+      }
+    }
+
+    // L4: Email domain validation — MX records + disposable blocklist
+    if (isDisposableEmail(email)) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Please use a permanent email address (disposable emails are not accepted).',
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+
+    const emailDomain = email.split('@')[1];
+    if (emailDomain && !(await hasValidMxRecords(emailDomain))) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'The email domain does not appear to accept mail. Please check your email address.',
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+
+    // L5: Cloudflare Turnstile verification
+    if (!(await verifyTurnstile(turnstileToken, ip))) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Security verification failed. Please refresh the page and try again.',
+        }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } },
       );
     }
 

@@ -100,6 +100,12 @@
   --animate-fade-in: fade-in 0.5s var(--ease-out) forwards;
   --animate-slide-up: slide-up 0.5s var(--ease-out) forwards;
   --animate-scale-in: scale-in 0.3s var(--ease-spring) forwards;
+
+  /* === Decorative Effect Tokens === */
+  --spacing-hero-glow: 31.25rem;      /* 500px — hero gradient orb diameter */
+  --spacing-campaign-glow: 37.5rem;   /* 600px — campaign gradient orb diameter */
+  --blur-hero: 100px;                 /* Hero gradient orb blur radius */
+  --blur-campaign: 120px;             /* Campaign gradient orb blur radius */
 }
 
 /* ── Dark Mode Overrides (Apple pure-black OLED) ──────────────── */

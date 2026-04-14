@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type ChangeEvent } from 'react';
+import { useState, useEffect, useRef, type FormEvent, type ChangeEvent } from 'react';
 
 /**
  * ContactForm — React island for the contact page.
@@ -6,6 +6,8 @@ import { useState, type FormEvent, type ChangeEvent } from 'react';
  * Features:
  *  - Client-side validation (required fields, email format)
  *  - Honeypot spam protection (_company hidden field)
+ *  - Time-based bot detection (_loadTime timestamp)
+ *  - Cloudflare Turnstile invisible CAPTCHA
  *  - Multi-state UI: idle → loading → success / error
  *  - Submits to /api/contact server endpoint
  */
@@ -81,9 +83,11 @@ const errorTextStyles: React.CSSProperties = {
 interface Props {
   /** Pre-fill subject from URL query param */
   defaultSubject?: string;
+  /** Cloudflare Turnstile site key */
+  turnstileSiteKey?: string;
 }
 
-export default function ContactForm({ defaultSubject = '' }: Props) {
+export default function ContactForm({ defaultSubject = '', turnstileSiteKey = '' }: Props) {
   const [formData, setFormData] = useState<FormData>({
     ...initialFormData,
     subject: defaultSubject,
@@ -91,6 +95,49 @@ export default function ContactForm({ defaultSubject = '' }: Props) {
   const [formState, setFormState] = useState<FormState>('idle');
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [serverMessage, setServerMessage] = useState('');
+  const [loadTime] = useState(() => Date.now());
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileRef = useRef<HTMLDivElement>(null);
+
+  // ── Load Turnstile widget ──
+
+  useEffect(() => {
+    if (!turnstileSiteKey) return;
+
+    // Load Turnstile script if not already loaded
+    const scriptId = 'cf-turnstile-script';
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => renderTurnstile();
+      document.head.appendChild(script);
+    } else if ((window as any).turnstile) {
+      renderTurnstile();
+    }
+
+    function renderTurnstile() {
+      const turnstile = (window as any).turnstile;
+      if (turnstile && turnstileRef.current && !turnstileRef.current.hasChildNodes()) {
+        turnstile.render(turnstileRef.current, {
+          sitekey: turnstileSiteKey,
+          callback: (token: string) => setTurnstileToken(token),
+          'expired-callback': () => setTurnstileToken(''),
+          'error-callback': () => {
+            // Turnstile failed client-side (e.g., localhost not whitelisted,
+            // ad blocker, network issue). Degrade gracefully — form remains
+            // submittable using other 4 security layers.
+            console.warn('[ContactForm] Turnstile client-side verification failed, degrading gracefully');
+            setTurnstileToken('__cf_turnstile_error__');
+          },
+          theme: 'auto',
+          size: 'flexible',
+        });
+      }
+    }
+  }, [turnstileSiteKey]);
 
   // ── Validation ──
 
@@ -157,7 +204,11 @@ export default function ContactForm({ defaultSubject = '' }: Props) {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          _loadTime: loadTime,
+          'cf-turnstile-response': turnstileToken,
+        }),
       });
 
       const data = await response.json();
@@ -227,6 +278,11 @@ export default function ContactForm({ defaultSubject = '' }: Props) {
             setFormState('idle');
             setErrors({});
             setServerMessage('');
+            setTurnstileToken('');
+            // Reset Turnstile widget
+            if ((window as any).turnstile) {
+              (window as any).turnstile.reset();
+            }
           }}
           style={{
             fontSize: 'var(--text-sm)',
@@ -400,6 +456,11 @@ export default function ContactForm({ defaultSubject = '' }: Props) {
             tabIndex={-1}
           />
         </div>
+
+        {/* Cloudflare Turnstile widget (invisible) */}
+        {turnstileSiteKey && (
+          <div ref={turnstileRef} style={{ marginTop: '-0.5rem' }} />
+        )}
 
         {/* Error message from server */}
         {formState === 'error' && serverMessage && (

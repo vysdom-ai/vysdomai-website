@@ -14,6 +14,12 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
+  expect: {
+    toMatchSnapshot: {
+      maxDiffPixelRatio: 0.01,
+    },
+  },
+
   projects: [
     {
       name: 'chromium',

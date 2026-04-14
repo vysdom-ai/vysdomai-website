@@ -1,6 +1,6 @@
 {
   "name": "vysdomai-website",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "Public website for Vysdom AI — research consultancy and TDI tools.",
@@ -12,7 +12,13 @@
     "lint": "biome check --write ./src",
     "format": "biome format --write ./src",
     "test": "playwright test",
-    "test:a11y": "playwright test --grep @a11y"
+    "test:visual": "playwright test tests/e2e/visual/",
+    "test:a11y": "playwright test tests/e2e/a11y/",
+    "test:conversion": "playwright test tests/e2e/conversion/",
+    "test:edge": "playwright test tests/e2e/edge-cases/",
+    "test:seo": "playwright test tests/seo.spec.ts",
+    "lighthouse": "lhci autorun",
+    "verify": "bash scripts/verify.sh"
   },
   "repository": {
     "type": "git",
@@ -53,6 +59,8 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
     "@biomejs/biome": "^2.4.11",
-    "@playwright/test": "^1.59.1"
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.59.1",
+    "linkinator": "^7.6.1"
   }
 }

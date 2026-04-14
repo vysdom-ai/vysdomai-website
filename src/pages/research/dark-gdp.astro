@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 import Container from '../../components/Container.astro';
@@ -6,6 +7,8 @@ import Card from '../../components/Card.astro';
 import Badge from '../../components/Badge.astro';
 import Button from '../../components/Button.astro';
 import CTABanner from '../../components/CTABanner.astro';
+import heroImage from '../../assets/images/campaigns/dark-gdp-hero.png';
+import infographicImage from '../../assets/images/campaigns/dark-gdp-infographic.png';
 
 // External links
 const ssrnUrl = '#'; // TODO: Replace with actual SSRN URL when available
@@ -72,8 +75,8 @@ const campaignSchema = {
   <section class="relative overflow-hidden py-20 md:py-28 lg:py-36" id="hero">
     <!-- Decorative gradient orb -->
     <div
-      class="pointer-events-none absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2
-             rounded-full opacity-15 blur-[120px]
+      class="pointer-events-none absolute -top-40 left-1/2 h-campaign-glow w-campaign-glow -translate-x-1/2
+             rounded-full opacity-15 blur-campaign
              gradient-hero"
       aria-hidden="true"
     ></div>
@@ -114,12 +117,14 @@ const campaignSchema = {
         <!-- Visual accent column (spans 2) -->
         <div class="lg:col-span-2">
           <div class="hero-fade relative" style="opacity: 0; transform: translateY(1.5rem);">
-            <img
-              src="/images/campaigns/dark-gdp-hero.png"
+            <Image
+              src={heroImage}
               alt="Abstract visualization of behavioral data flowing from human silhouettes into algorithmic networks"
+              widths={[400, 600, 800]}
+              sizes="(max-width: 1024px) 100vw, 40vw"
+              format="webp"
+              quality="high"
               class="rounded-2xl shadow-lg"
-              width="600"
-              height="600"
               loading="eager"
             />
           </div>
@@ -184,12 +189,14 @@ const campaignSchema = {
 
       <!-- Infographic -->
       <div class="mt-12 flex justify-center">
-        <img
-          src="/images/campaigns/dark-gdp-infographic.png"
+        <Image
+          src={infographicImage}
           alt="Infographic: What GDP Misses — Measured economy (wages, goods, services) vs. Unmeasured Dark GDP (screen time, behavioral data, AI training)"
+          widths={[480, 720, 960]}
+          sizes="(max-width: 768px) 100vw, 768px"
+          format="webp"
+          quality="high"
           class="w-full max-w-3xl rounded-2xl border border-border-subtle shadow-md"
-          width="960"
-          height="540"
           loading="lazy"
         />
       </div>

@@ -6,8 +6,9 @@ import Badge from '../components/Badge.astro';
 import CTABanner from '../components/CTABanner.astro';
 import ContactForm from '../components/ContactForm.tsx';
 
-// ── Booking URL ──
+// ── Configuration ──
 const BOOKING_URL = import.meta.env.BOOKING_URL || '#';
+const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 
 // ── Parse subject from query string (for pre-filling from service card CTAs) ──
 const url = new URL(Astro.request.url);
@@ -82,7 +83,7 @@ const contactSchema = {
         <div class="grid grid-cols-1 gap-10 lg:grid-cols-5">
           <!-- Left: Contact form (3 cols) -->
           <div class="lg:col-span-3 relative">
-            <ContactForm client:load defaultSubject={defaultSubject} />
+            <ContactForm client:load defaultSubject={defaultSubject} turnstileSiteKey={TURNSTILE_SITE_KEY} />
           </div>
 
           <!-- Right: Info sidebar (2 cols) -->
